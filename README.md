@@ -2,6 +2,10 @@
 
 A home inventory management PWA for tracking household stock (tea, oil, rice, etc.) with low-stock indicators. Works offline in the browser, primarily designed for mobile use.
 
+## Demo
+
+https://drom4x.github.io/inventorry/
+
 ## Features
 
 - **Products Management** - Add, edit, delete products with categories and units
