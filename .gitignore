@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build output (uncomment below if NOT using GitHub Pages)
+# dist/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Editor
+.vscode/
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local files
+*.local
+
+# TypeScript
+*.tsbuildinfo

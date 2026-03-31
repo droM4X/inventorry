@@ -1,0 +1,114 @@
+{
+  "app": {
+    "name": "Inventorry",
+    "tagline": "Your home inventory manager"
+  },
+  "about": {
+    "version": "Version {version}",
+    "versionUpdated": "App updated to version {version}!",
+    "versionMessage": "New features and improvements are now available.",
+    "pwaReady": "PWA Ready",
+    "offlineSupport": "Offline Support"
+  },
+  "nav": {
+    "products": "Products",
+    "categories": "Categories",
+    "units": "Units",
+    "settings": "Settings",
+    "about": "About",
+    "logs": "Logs"
+  },
+  "filter": {
+    "all": "All",
+    "lowStock": "Low Stock"
+  },
+  "product": {
+    "title": "Products",
+    "add": "Add Product",
+    "edit": "Edit Product",
+    "delete": "Delete Product",
+    "name": "Name",
+    "subname": "Additional info",
+    "subnamePlaceholder": "e.g. flavour, type...",
+    "category": "Category",
+    "unit": "Unit",
+    "quantity": "Quantity",
+    "threshold": "Low Stock Threshold",
+    "search": "Search products...",
+    "noProducts": "No products yet",
+    "noProductsLowStock": "No low stock items",
+    "confirmDelete": "Are you sure you want to delete this product?",
+    "quantityFormat": "{quantity} {unit}",
+    "lastModified": "Last modified",
+    "important": "important"
+  },
+  "category": {
+    "title": "Categories",
+    "add": "Add Category",
+    "edit": "Edit Category",
+    "delete": "Delete Category",
+    "name": "Name",
+    "color": "Color",
+    "icon": "Icon",
+    "noCategories": "No categories yet",
+    "confirmDelete": "Are you sure you want to delete this category? Products will be moved to uncategorized.",
+    "uncategorized": "Uncategorized",
+    "hasProducts": "Cannot delete - products use this category"
+  },
+  "unit": {
+    "title": "Units",
+    "add": "Add Unit",
+    "edit": "Edit Unit",
+    "delete": "Delete Unit",
+    "name": "Name",
+    "nameEn": "Name (English)",
+    "nameHu": "Name (Hungarian)",
+    "abbreviation": "Abbreviation",
+    "noUnits": "No units yet",
+    "confirmDelete": "Are you sure you want to delete this unit? Products will be moved to pieces.",
+    "hasProducts": "Cannot delete - products use this unit"
+  },
+  "logs": {
+    "title": "Activity Logs",
+    "noLogs": "No recent activity",
+    "actionCreated": "Created",
+    "actionUpdated": "Updated",
+    "actionDeleted": "Deleted",
+    "actionAdded": "Added",
+    "actionRemoved": "Removed"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "logs": "Activity Logs",
+    "logLimit": "Number of logs to keep:",
+    "export": "Export Data",
+    "import": "Import Data",
+    "clearAll": "Clear All Data",
+    "confirmClear": "Are you sure you want to clear all data? This cannot be undone.",
+    "exportSuccess": "Data exported successfully",
+    "importSuccess": "Data imported successfully",
+    "importError": "Failed to import data. Invalid format.",
+    "clearSuccess": "All data cleared"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "close": "Close",
+    "confirm": "Confirm",
+    "export": "Export",
+    "import": "Import"
+  },
+  "errors": {
+    "required": "This field is required",
+    "invalidNumber": "Please enter a valid number",
+    "minZero": "Value must be 0 or greater"
+  }
+}

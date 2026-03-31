@@ -1,0 +1,114 @@
+{
+  "app": {
+    "name": "Inventorry",
+    "tagline": "Otthoni készletkezelő"
+  },
+  "about": {
+    "version": "Verzió {version}",
+    "versionUpdated": "Alkalmazás frissítve {version} verzióra!",
+    "versionMessage": "Új funkciók és fejlesztések érhetők el.",
+    "pwaReady": "PWA app",
+    "offlineSupport": "Offline támogatás"
+  },
+  "nav": {
+    "products": "Termékek",
+    "categories": "Kategóriák",
+    "units": "Mértékegységek",
+    "settings": "Beállítások",
+    "about": "Névjegy",
+    "logs": "Naplók"
+  },
+  "filter": {
+    "all": "Mind",
+    "lowStock": "Alacsony készlet"
+  },
+  "product": {
+    "title": "Termékek",
+    "add": "Termék hozzáadása",
+    "edit": "Termék szerkesztése",
+    "delete": "Termék törlése",
+    "name": "Név",
+    "subname": "További információ",
+    "subnamePlaceholder": "pl. íz, típus...",
+    "category": "Kategória",
+    "unit": "Mértékegység",
+    "quantity": "Mennyiség",
+    "threshold": "Alacsony készlet küszöb",
+    "search": "Termékek keresése...",
+    "noProducts": "Még nincs termék",
+    "noProductsLowStock": "Nincs alacsony készletű termék",
+    "confirmDelete": "Biztosan törölni szeretnéd ezt a terméket?",
+    "quantityFormat": "{quantity} {unit}",
+    "lastModified": "Utoljára módosítva",
+    "important": "fontos"
+  },
+  "category": {
+    "title": "Kategóriák",
+    "add": "Kategória hozzáadása",
+    "edit": "Kategória szerkesztése",
+    "delete": "Kategória törlése",
+    "name": "Név",
+    "color": "Szín",
+    "icon": "Ikon",
+    "noCategories": "Még nincs kategória",
+    "confirmDelete": "Biztosan törölni szeretnéd ezt a kategóriát? A termékek az kategorizálatlanba kerülnek.",
+    "uncategorized": "Kategorizálatlan",
+    "hasProducts": "Nem törölhető - termékek használják ezt a kategóriát"
+  },
+  "unit": {
+    "title": "Mértékegységek",
+    "add": "Mértékegység hozzáadása",
+    "edit": "Mértékegység szerkesztése",
+    "delete": "Mértékegység törlése",
+    "name": "Név",
+    "nameEn": "Név (angol)",
+    "nameHu": "Név (magyar)",
+    "abbreviation": "Rövidítés",
+    "noUnits": "Még nincs mértékegység",
+    "confirmDelete": "Biztosan törölni szeretnéd ezt a mértékegységet? A termékek darabra állnak át.",
+    "hasProducts": "Nem törölhető - termékek használják ezt a mértékegységet"
+  },
+  "logs": {
+    "title": "Tevékenységi napló",
+    "noLogs": "Nincs recent tevékenység",
+    "actionCreated": "Létrehozva",
+    "actionUpdated": "Módosítva",
+    "actionDeleted": "Törölve",
+    "actionAdded": "Hozzáadva",
+    "actionRemoved": "Elvéve"
+  },
+  "settings": {
+    "title": "Beállítások",
+    "language": "Nyelv",
+    "theme": "Téma",
+    "themeLight": "Világos",
+    "themeDark": "Sötét",
+    "themeSystem": "Rendszer",
+    "logs": "Tevékenységi napló",
+    "logLimit": "Naplóbejegyzések száma:",
+    "export": "Adatok exportálása",
+    "import": "Adatok importálása",
+    "clearAll": "Összes adat törlése",
+    "confirmClear": "Biztosan törölni szeretnéd az összes adatot? Ez nem vonható vissza.",
+    "exportSuccess": "Adatok sikeresen exportálva",
+    "importSuccess": "Adatok sikeresen importálva",
+    "importError": "Sikertelen importálás. Érvénytelen formátum.",
+    "clearSuccess": "Összes adat törölve"
+  },
+  "actions": {
+    "save": "Mentés",
+    "cancel": "Mégse",
+    "delete": "Törlés",
+    "edit": "Szerkesztés",
+    "add": "Hozzáadás",
+    "close": "Bezárás",
+    "confirm": "Megerősítés",
+    "export": "Export",
+    "import": "Import"
+  },
+  "errors": {
+    "required": "Ez a mező kötelező",
+    "invalidNumber": "Kérlek, érvényes számot adj meg",
+    "minZero": "Az értéknek 0 vagy nagyobbnak kell lennie"
+  }
+}
