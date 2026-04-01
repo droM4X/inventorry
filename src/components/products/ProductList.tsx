@@ -56,78 +56,101 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
   const { t, language } = useI18n();
   const { getUnitName } = useStore();
   const [offsetX, setOffsetX] = useState(0);
-  const [startX, setStartX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [showSwipeActions, setShowSwipeActions] = useState(false);
   const rowRef = useRef<HTMLDivElement>(null);
+  const swipeRef = useRef<{ startX: number; startY: number }>({ startX: 0, startY: 0 });
   const SWIPE_THRESHOLD = 80;
+  const TAP_THRESHOLD = 10;
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (showSwipeActions) return;
-    setStartX(e.touches[0].clientX);
+    swipeRef.current = {
+      startX: e.touches[0].clientX,
+      startY: e.touches[0].clientY
+    };
     setIsDragging(true);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging || showSwipeActions) return;
+    if (!isDragging) return;
     const currentX = e.touches[0].clientX;
-    const diff = currentX - startX;
-    if (diff > 0) {
-      setOffsetX(Math.min(diff, SWIPE_THRESHOLD + 20));
+    const currentY = e.touches[0].clientY;
+    const diffX = currentX - swipeRef.current.startX;
+    const diffY = Math.abs(currentY - swipeRef.current.startY);
+    
+    if (diffY > 20) return;
+    
+    if (diffX > 0) {
+      setOffsetX(Math.min(diffX, SWIPE_THRESHOLD + 20));
     } else {
-      setOffsetX(Math.max(diff, -(SWIPE_THRESHOLD + 20)));
+      setOffsetX(Math.max(diffX, -(SWIPE_THRESHOLD + 20)));
     }
   };
 
   const handleTouchEnd = () => {
     setIsDragging(false);
-    if (offsetX > SWIPE_THRESHOLD) {
+    const absOffset = Math.abs(offsetX);
+    
+    if (absOffset < TAP_THRESHOLD) {
+      setOffsetX(0);
+      setShowSwipeActions(false);
+    } else if (absOffset > SWIPE_THRESHOLD) {
       setShowSwipeActions(true);
-    } else if (offsetX < -SWIPE_THRESHOLD) {
-      setShowSwipeActions(true);
+      setOffsetX(0);
+    } else {
+      setOffsetX(0);
+      setShowSwipeActions(false);
     }
-    setOffsetX(0);
+  };
+
+  const handleSwipeDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDelete();
+    setShowSwipeActions(false);
+  };
+
+  const handleSwipeToggleOpened = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onToggleOpened();
+    setShowSwipeActions(false);
+  };
+
+  const dismissSwipe = () => {
+    setShowSwipeActions(false);
   };
 
   return (
-    <div className="relative overflow-hidden rounded-xl">
-      <div className="absolute inset-0 flex">
-        <div 
-          className={`flex items-center justify-center w-20 bg-red-500 text-white cursor-pointer transition-opacity ${
-            showSwipeActions || offsetX > 30 ? 'opacity-100' : 'opacity-0'
-          }`}
-          onClick={(e) => {
-            e.stopPropagation();
-            onDelete();
-            setShowSwipeActions(false);
-          }}
-        >
-          <Trash2 className="w-6 h-6" />
+    <div className="relative">
+      {showSwipeActions && (
+        <div className="absolute inset-0 flex z-20 pointer-events-none">
+          <button
+            onClick={handleSwipeDelete}
+            className="w-20 bg-red-500 text-white flex items-center justify-center pointer-events-auto"
+          >
+            <Trash2 className="w-6 h-6" />
+          </button>
+          <div className="flex-1" />
+          <button
+            onClick={handleSwipeToggleOpened}
+            className="w-20 bg-orange-500 text-white flex items-center justify-center pointer-events-auto"
+          >
+            <Pencil className="w-6 h-6" />
+          </button>
         </div>
-        <div className="flex-1" />
-        <div 
-          className={`flex items-center justify-center w-20 bg-orange-500 text-white cursor-pointer transition-opacity ${
-            showSwipeActions || offsetX < -30 ? 'opacity-100' : 'opacity-0'
-          }`}
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleOpened();
-            setShowSwipeActions(false);
-          }}
-        >
-          <Pencil className="w-6 h-6" />
-        </div>
-      </div>
+      )}
       <div
         ref={rowRef}
-        className="relative bg-[var(--color-surface)] transition-transform"
-        style={{ transform: showSwipeActions ? 'none' : `translateX(${offsetX}px)` }}
+        className={`relative bg-[var(--color-surface)] transition-transform duration-200 ${
+          showSwipeActions ? 'translate-x-0' : ''
+        }`}
+        style={{ transform: `translateX(${showSwipeActions ? 0 : offsetX}px)` }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        onClick={dismissSwipe}
       >
         <div
-          className={`p-3 rounded-xl border transition-colors relative overflow-hidden ${
+          className={`p-3 rounded-xl border transition-colors relative ${
             status === 'out'
               ? 'bg-[var(--color-out-of-stock)] border-red-300 dark:border-red-800'
               : status === 'low'
