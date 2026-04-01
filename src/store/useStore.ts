@@ -16,6 +16,7 @@ export const useStore = create<StoreState>()(
       theme: 'system',
       logLimit: 100,
       storedVersion: '',
+      collapsedSections: [],
 
       addProduct: (product) => {
         const now = Date.now();
@@ -213,6 +214,17 @@ export const useStore = create<StoreState>()(
 
       setStoredVersion: (version) => set({ storedVersion: version }),
 
+      toggleCollapsedSection: (sectionId) => {
+        set((state) => {
+          const isCollapsed = state.collapsedSections.includes(sectionId);
+          return {
+            collapsedSections: isCollapsed
+              ? state.collapsedSections.filter((id) => id !== sectionId)
+              : [...state.collapsedSections, sectionId],
+          };
+        });
+      },
+
       addActivityLog: (log) => {
         const newLog: ActivityLog = {
           ...log,
@@ -303,6 +315,7 @@ export const useStore = create<StoreState>()(
         theme: state.theme,
         logLimit: state.logLimit,
         storedVersion: state.storedVersion,
+        collapsedSections: state.collapsedSections,
       }),
     }
   )

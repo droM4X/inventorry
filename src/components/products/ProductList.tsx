@@ -150,9 +150,7 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
                   })}
                 </span>
                 {product.opened && (
-                  <span className="text-xs italic text-orange-600 dark:text-orange-400">
-                    + {t('product.opened')}
-                  </span>
+                  <FontAwesomeIcon icon={faWineGlassEmpty} className="w-4 h-4 text-orange-500" />
                 )}
                 {product.important && (
                   <span className="px-2 py-0.5 text-xs font-medium bg-red-500 text-white rounded-full">
@@ -233,23 +231,13 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
 
 export function ProductList() {
   const { t } = useI18n();
-  const { products, categories, updateProduct, deleteProduct, toggleProductOpened, toggleProductImportant, getCategoryName, getCategoryColor, getCategoryIcon } = useStore();
+  const { products, categories, updateProduct, deleteProduct, toggleProductOpened, toggleProductImportant, getCategoryName, getCategoryColor, getCategoryIcon, collapsedSections, toggleCollapsedSection } = useStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<string | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<FilterType>('all');
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
-  const [collapsedCategories, setCollapsedCategories] = useState<Record<FilterType, Set<string>>>({
-    'all': new Set(),
-    'low-stock': new Set(),
-  });
-
-  useEffect(() => {
-    if (filter === 'low-stock') {
-      setCollapsedCategories((prev) => ({ ...prev, 'low-stock': new Set() }));
-    }
-  }, [filter]);
 
   useEffect(() => {
     const handleClick = () => setMenuOpen(null);
@@ -310,14 +298,11 @@ export function ProductList() {
   }, [groupedProducts, categories]);
 
   const toggleCategory = (categoryId: string) => {
-    setCollapsedCategories((prev) => {
-      const current = prev[filter];
-      const next = new Set(current);
-      if (next.has(categoryId)) next.delete(categoryId);
-      else next.add(categoryId);
-      return { ...prev, [filter]: next };
-    });
+    const sectionId = `${filter}-${categoryId}`;
+    toggleCollapsedSection(sectionId);
   };
+
+  const isSectionCollapsed = (sectionId: string) => collapsedSections.includes(`${filter}-${sectionId}`);
 
   const handleAdd = () => {
     setEditingProduct(null);
@@ -391,7 +376,7 @@ export function ProductList() {
         const importantProducts = filteredProducts.filter((p) => p.important);
         if (importantProducts.length === 0) return null;
         
-        const isCollapsed = collapsedCategories[filter].has('important');
+        const isCollapsed = isSectionCollapsed('important');
         
         return (
           <div className="mb-4 px-4">
@@ -450,7 +435,7 @@ export function ProductList() {
         <div className="flex-1 overflow-y-auto px-4 pb-24 space-y-4">
           {sortedCategoryIds.map((categoryId) => {
             const categoryProducts = groupedProducts[categoryId];
-            const isCollapsed = collapsedCategories[filter].has(categoryId);
+            const isCollapsed = isSectionCollapsed(categoryId);
             const categoryColor = getCategoryColor(categoryId);
             const categoryIcon = getCategoryIcon(categoryId);
             

@@ -48,6 +48,7 @@ export interface StoreState {
   theme: 'light' | 'dark' | 'system';
   logLimit: number;
   storedVersion: string;
+  collapsedSections: string[];
   addProduct: (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => void;
   updateProduct: (id: string, updates: Partial<Product>) => void;
   toggleProductImportant: (id: string) => void;
@@ -70,6 +71,7 @@ export interface StoreState {
   setTheme: (theme: 'light' | 'dark' | 'system') => void;
   setLogLimit: (limit: number) => void;
   setStoredVersion: (version: string) => void;
+  toggleCollapsedSection: (sectionId: string) => void;
   addActivityLog: (log: Omit<ActivityLog, 'id' | 'timestamp'>) => void;
   exportData: () => string;
   importData: (jsonString: string) => boolean;
