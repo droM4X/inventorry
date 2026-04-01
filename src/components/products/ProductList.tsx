@@ -1,7 +1,8 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { Plus, Search, Minus, ChevronDown, ChevronRight, Package, AlertTriangle, MoreVertical, Pencil, Star, StarOff } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { Plus, Search, Minus, ChevronDown, ChevronRight, Package, AlertTriangle, MoreVertical, Pencil as PencilIcon, Star, StarOff, Trash2 } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCartShopping, faGlassWater, faHouse, faUser, faUtensils, faAppleWhole, faBottleWater, faMugHot, faWineGlass, faPills, faWrench, faShirt, faGamepad, faPaw, faCar, faGift, faBox, faBagShopping, faCookie, faDrumstickBite, faCarrot, faPepperHot, faBroom, faSnowflake, faFolder, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faGlassWater, faHouse, faUser, faUtensils, faAppleWhole, faBottleWater, faMugHot, faWineGlass, faPills, faWrench, faShirt, faGamepad, faPaw, faCar, faGift, faBox, faBagShopping, faCookie, faDrumstickBite, faCarrot, faPepperHot, faBroom, faSnowflake, faFolder, faStar, faWineGlassEmpty } from '@fortawesome/free-solid-svg-icons';
 import { useI18n } from '@/hooks/useI18n';
 import { useStore } from '@/store/useStore';
 import { Modal } from '@/components/layout/Modal';
@@ -100,10 +101,22 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
   };
 
   return (
-    <div className="relative">
+    <div className="relative overflow-visible">
+      <div
+        className={`absolute inset-y-0 left-0 flex items-center justify-center bg-red-500 text-white rounded-xl ${offsetX > 0 ? 'opacity-100' : 'opacity-0'}`}
+        style={{ width: `${Math.max(0, offsetX)}px` }}
+      >
+        <Trash2 className="w-6 h-6" />
+      </div>
+      <div
+        className={`absolute inset-y-0 right-0 flex items-center justify-center bg-green-500 text-white rounded-xl ${offsetX < 0 ? 'opacity-100' : 'opacity-0'}`}
+        style={{ width: `${Math.max(0, -offsetX)}px` }}
+      >
+        <PencilIcon className="w-6 h-6" />
+      </div>
       <div
         ref={rowRef}
-        className="relative bg-[var(--color-surface)] transition-transform duration-200"
+        className="relative bg-[var(--color-surface)] transition-transform duration-200 z-10"
         style={{ transform: `translateX(${offsetX}px)` }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -163,6 +176,17 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
               </button>
               <div className="relative">
                 <button
+                  ref={(el) => {
+                    if (el && menuOpen === product.id) {
+                      const rect = el.getBoundingClientRect();
+                      const menuEl = document.getElementById(`menu-${product.id}`);
+                      if (menuEl) {
+                        menuEl.style.top = `${rect.bottom + window.scrollY + 4}px`;
+                        menuEl.style.right = `${window.innerWidth - rect.right}px`;
+                        menuEl.style.left = 'auto';
+                      }
+                    }
+                  }}
                   onClick={(e) => {
                     e.stopPropagation();
                     setMenuOpen(menuOpen === product.id ? null : product.id);
@@ -171,11 +195,14 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
                 >
                   <MoreVertical className="w-4 h-4" />
                 </button>
-                {menuOpen === product.id && (
-                  <div className="absolute right-0 top-full mt-1 z-[60] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg shadow-lg min-w-36">
+                {menuOpen === product.id && createPortal(
+                  <div
+                    id={`menu-${product.id}`}
+                    className="fixed z-[9999] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg shadow-lg min-w-36"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
+                      onClick={() => {
                         onToggleImportant();
                         setMenuOpen(null);
                       }}
@@ -185,17 +212,17 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
                       <span>{product.important ? t('actions.removeImportant') : t('actions.addImportant')}</span>
                     </button>
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
+                      onClick={() => {
                         onToggleOpened();
                         setMenuOpen(null);
                       }}
                       className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[var(--color-border)] text-left"
                     >
-                      <Pencil className="w-4 h-4 text-orange-500" />
+                      <FontAwesomeIcon icon={faWineGlassEmpty} className="w-4 h-4 text-orange-500" />
                       <span>{product.opened ? t('actions.markClosed') : t('actions.markOpened')}</span>
                     </button>
-                  </div>
+                  </div>,
+                  document.body
                 )}
               </div>
             </div>
@@ -261,6 +288,7 @@ export function ProductList() {
     const groups: Record<string, Product[]> = {};
     
     filteredProducts.forEach((product) => {
+      if (product.important) return;
       const categoryId = product.categoryId || 'uncategorized';
       if (!groups[categoryId]) groups[categoryId] = [];
       groups[categoryId].push(product);
@@ -388,7 +416,7 @@ export function ProductList() {
               </span>
             </button>
             {!isCollapsed && (
-              <div className="space-y-2 ml-2">
+              <div className="space-y-2 ml-2 overflow-visible">
                 {importantProducts.map((product) => {
                   const categoryColor = getCategoryColor(product.categoryId);
                   const categoryIcon = getCategoryIcon(product.categoryId);
@@ -450,7 +478,7 @@ export function ProductList() {
                   </span>
                 </button>
                 {!isCollapsed && (
-                  <div className="space-y-2 ml-2">
+                  <div className="space-y-2 ml-2 overflow-visible">
                     {categoryProducts.map((product) => (
                       <SwipeableRow
                         key={product.id}

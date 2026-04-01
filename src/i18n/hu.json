@@ -40,7 +40,7 @@
     "confirmDelete": "Biztosan törölni szeretnéd ezt a terméket?",
     "quantityFormat": "{quantity} {unit}",
     "lastModified": "Utoljára módosítva",
-    "important": "fontos",
+    "important": "Fontos",
     "opened": "bontott"
   },
   "category": {
@@ -71,7 +71,7 @@
   },
   "logs": {
     "title": "Tevékenységi napló",
-    "noLogs": "Nincs recent tevékenység",
+    "noLogs": "Még nincs tevékenység",
     "actionCreated": "Létrehozva",
     "actionUpdated": "Módosítva",
     "actionDeleted": "Törölve",
@@ -107,9 +107,9 @@
     "export": "Export",
     "import": "Import",
     "addImportant": "Fontossá tétel",
-    "removeImportant": "Eltávolítás a fontosak közül",
-    "markOpened": "Megnyitás",
-    "markClosed": "Bezárás"
+    "removeImportant": "Nem fontos",
+    "markOpened": "Bontott is van",
+    "markClosed": "Nincs bontott"
   },
   "errors": {
     "required": "Ez a mező kötelező",

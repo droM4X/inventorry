@@ -40,7 +40,7 @@
     "confirmDelete": "Are you sure you want to delete this product?",
     "quantityFormat": "{quantity} {unit}",
     "lastModified": "Last modified",
-    "important": "important",
+    "important": "Important",
     "opened": "opened"
   },
   "category": {
