@@ -40,7 +40,8 @@
     "confirmDelete": "Biztosan törölni szeretnéd ezt a terméket?",
     "quantityFormat": "{quantity} {unit}",
     "lastModified": "Utoljára módosítva",
-    "important": "fontos"
+    "important": "fontos",
+    "opened": "bontott"
   },
   "category": {
     "title": "Kategóriák",
