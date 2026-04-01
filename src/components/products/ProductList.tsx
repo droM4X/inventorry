@@ -176,17 +176,7 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
               </button>
               <div className="relative">
                 <button
-                  ref={(el) => {
-                    if (el && menuOpen === product.id) {
-                      const rect = el.getBoundingClientRect();
-                      const menuEl = document.getElementById(`menu-${product.id}`);
-                      if (menuEl) {
-                        menuEl.style.top = `${rect.bottom + window.scrollY + 4}px`;
-                        menuEl.style.right = `${window.innerWidth - rect.right}px`;
-                        menuEl.style.left = 'auto';
-                      }
-                    }
-                  }}
+                  id={`menu-btn-${product.id}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     setMenuOpen(menuOpen === product.id ? null : product.id);
@@ -195,35 +185,43 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
                 >
                   <MoreVertical className="w-4 h-4" />
                 </button>
-                {menuOpen === product.id && createPortal(
-                  <div
-                    id={`menu-${product.id}`}
-                    className="fixed z-[9999] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg shadow-lg min-w-36"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <button
-                      onClick={() => {
-                        onToggleImportant();
-                        setMenuOpen(null);
+                {menuOpen === product.id && (() => {
+                  const btn = document.getElementById(`menu-btn-${product.id}`);
+                  const rect = btn?.getBoundingClientRect();
+                  return createPortal(
+                    <div
+                      id={`menu-${product.id}`}
+                      className="fixed z-[9999] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg shadow-lg min-w-36"
+                      style={{
+                        top: rect ? `${rect.bottom + 4}px` : 'auto',
+                        right: rect ? `${window.innerWidth - rect.right}px` : '8px',
                       }}
-                      className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[var(--color-border)] text-left"
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      {product.important ? <StarOff className="w-4 h-4 text-yellow-500" /> : <Star className="w-4 h-4 text-yellow-500" />}
-                      <span>{product.important ? t('actions.removeImportant') : t('actions.addImportant')}</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        onToggleOpened();
-                        setMenuOpen(null);
-                      }}
-                      className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[var(--color-border)] text-left"
-                    >
-                      <FontAwesomeIcon icon={faWineGlassEmpty} className="w-4 h-4 text-orange-500" />
-                      <span>{product.opened ? t('actions.markClosed') : t('actions.markOpened')}</span>
-                    </button>
-                  </div>,
-                  document.body
-                )}
+                      <button
+                        onClick={() => {
+                          onToggleImportant();
+                          setMenuOpen(null);
+                        }}
+                        className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[var(--color-border)] text-left"
+                      >
+                        {product.important ? <StarOff className="w-4 h-4 text-yellow-500" /> : <Star className="w-4 h-4 text-yellow-500" />}
+                        <span>{product.important ? t('actions.removeImportant') : t('actions.addImportant')}</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          onToggleOpened();
+                          setMenuOpen(null);
+                        }}
+                        className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[var(--color-border)] text-left"
+                      >
+                        <FontAwesomeIcon icon={faWineGlassEmpty} className="w-4 h-4 text-orange-500" />
+                        <span>{product.opened ? t('actions.markClosed') : t('actions.markOpened')}</span>
+                      </button>
+                    </div>,
+                    document.body
+                  );
+                })()}
               </div>
             </div>
           </div>
