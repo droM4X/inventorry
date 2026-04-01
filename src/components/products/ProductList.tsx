@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { Plus, Search, Minus, Edit2, Trash2, ChevronDown, ChevronRight, Package, AlertTriangle } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCartShopping, faGlassWater, faHouse, faUser, faUtensils, faAppleWhole, faBottleWater, faMugHot, faWineGlass, faPills, faWrench, faShirt, faGamepad, faPaw, faCar, faGift, faBox, faBagShopping, faCookie, faDrumstickBite, faCarrot, faPepperHot, faBroom, faSnowflake, faFolder } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faGlassWater, faHouse, faUser, faUtensils, faAppleWhole, faBottleWater, faMugHot, faWineGlass, faPills, faWrench, faShirt, faGamepad, faPaw, faCar, faGift, faBox, faBagShopping, faCookie, faDrumstickBite, faCarrot, faPepperHot, faBroom, faSnowflake, faFolder, faStar } from '@fortawesome/free-solid-svg-icons';
 import { useI18n } from '@/hooks/useI18n';
 import { useStore } from '@/store/useStore';
 import { Modal } from '@/components/layout/Modal';
@@ -35,6 +35,7 @@ const iconMap: Record<string, typeof faCartShopping> = {
   'broom': faBroom,
   'snowflake': faSnowflake,
   'folder': faFolder,
+  'star': faStar,
 };
 
 interface SwipeableRowProps {
@@ -45,36 +46,54 @@ interface SwipeableRowProps {
   onEdit: () => void;
   onDelete: () => void;
   onQuantityChange: (newQuantity: number) => void;
-  onToggleImportant: () => void;
+  onToggleOpened: () => void;
 }
 
-function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, onDelete, onQuantityChange, onToggleImportant }: SwipeableRowProps) {
+function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, onDelete, onQuantityChange, onToggleOpened }: SwipeableRowProps) {
   const { t, language } = useI18n();
   const { getUnitName } = useStore();
   const [offsetX, setOffsetX] = useState(0);
   const [startX, setStartX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [lastTap, setLastTap] = useState(0);
+  const [isPressed, setIsPressed] = useState(false);
+  const [showSwipeActions, setShowSwipeActions] = useState(false);
   const rowRef = useRef<HTMLDivElement>(null);
+  const pressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const SWIPE_THRESHOLD = 80;
+  const LONG_PRESS_DURATION = 1000;
+
+  const handlePointerDown = () => {
+    setIsPressed(true);
+    pressTimerRef.current = setTimeout(() => {
+      onEdit();
+      setIsPressed(false);
+    }, LONG_PRESS_DURATION);
+  };
+
+  const handlePointerUp = () => {
+    setIsPressed(false);
+    if (pressTimerRef.current) {
+      clearTimeout(pressTimerRef.current);
+      pressTimerRef.current = null;
+    }
+  };
+
+  const handlePointerLeave = () => {
+    setIsPressed(false);
+    if (pressTimerRef.current) {
+      clearTimeout(pressTimerRef.current);
+      pressTimerRef.current = null;
+    }
+  };
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (showSwipeActions) return;
     setStartX(e.touches[0].clientX);
     setIsDragging(true);
   };
 
-  const handleDoubleTap = () => {
-    const now = Date.now();
-    if (now - lastTap < 300) {
-      onToggleImportant();
-      setLastTap(0);
-    } else {
-      setLastTap(now);
-    }
-  };
-
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
+    if (!isDragging || showSwipeActions) return;
     const currentX = e.touches[0].clientX;
     const diff = currentX - startX;
     if (diff > 0) {
@@ -87,32 +106,58 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
   const handleTouchEnd = () => {
     setIsDragging(false);
     if (offsetX > SWIPE_THRESHOLD) {
-      onDelete();
+      setShowSwipeActions(true);
     } else if (offsetX < -SWIPE_THRESHOLD) {
-      onEdit();
+      setShowSwipeActions(true);
     }
     setOffsetX(0);
   };
 
-  const isDeleteRevealed = offsetX > 30;
-  const isEditRevealed = offsetX < -30;
+  const handleRowClick = () => {
+    if (showSwipeActions) {
+      setShowSwipeActions(false);
+    }
+  };
 
   return (
     <div className="relative overflow-hidden rounded-xl">
       <div className="absolute inset-0 flex">
-        <div className={`flex items-center justify-center w-20 bg-red-500 text-white transition-opacity ${isDeleteRevealed ? 'opacity-100' : 'opacity-0'}`}>
+        <div 
+          className={`flex items-center justify-center w-20 bg-red-500 text-white cursor-pointer transition-opacity ${
+            showSwipeActions || offsetX > 30 ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+            setShowSwipeActions(false);
+          }}
+        >
           <Trash2 className="w-6 h-6" />
         </div>
         <div className="flex-1" />
-        <div className={`flex items-center justify-center w-20 bg-blue-500 text-white transition-opacity ${isEditRevealed ? 'opacity-100' : 'opacity-0'}`}>
+        <div 
+          className={`flex items-center justify-center w-20 bg-orange-500 text-white cursor-pointer transition-opacity ${
+            showSwipeActions || offsetX < -30 ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleOpened();
+            setShowSwipeActions(false);
+          }}
+        >
           <Edit2 className="w-6 h-6" />
         </div>
       </div>
       <div
         ref={rowRef}
-        className="relative bg-[var(--color-surface)] transition-transform"
-        style={{ transform: `translateX(${offsetX}px)` }}
-        onClick={handleDoubleTap}
+        className={`relative bg-[var(--color-surface)] transition-transform ${
+          isPressed ? 'scale-[0.98]' : ''
+        }`}
+        style={{ transform: showSwipeActions ? 'none' : `translateX(${offsetX}px)` }}
+        onClick={handleRowClick}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerLeave}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -144,6 +189,11 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
                     unit: getUnitName(product.unitId, language),
                   })}
                 </span>
+                {product.opened && (
+                  <span className="text-xs italic text-orange-600 dark:text-orange-400">
+                    + {t('product.opened')}
+                  </span>
+                )}
                 {product.important && (
                   <span className="px-2 py-0.5 text-xs font-medium bg-red-500 text-white rounded-full">
                     {t('product.important')}
@@ -174,17 +224,20 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
 
 export function ProductList() {
   const { t } = useI18n();
-  const { products, categories, updateProduct, deleteProduct, toggleProductImportant, getCategoryName, getCategoryColor, getCategoryIcon } = useStore();
+  const { products, categories, updateProduct, deleteProduct, toggleProductOpened, getCategoryName, getCategoryColor, getCategoryIcon } = useStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<string | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<FilterType>('all');
-  const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
+  const [collapsedCategories, setCollapsedCategories] = useState<Record<FilterType, Set<string>>>({
+    'all': new Set(),
+    'low-stock': new Set(),
+  });
 
   useEffect(() => {
     if (filter === 'low-stock') {
-      setCollapsedCategories(new Set());
+      setCollapsedCategories((prev) => ({ ...prev, 'low-stock': new Set() }));
     }
   }, [filter]);
 
@@ -239,10 +292,11 @@ export function ProductList() {
 
   const toggleCategory = (categoryId: string) => {
     setCollapsedCategories((prev) => {
-      const next = new Set(prev);
+      const current = prev[filter];
+      const next = new Set(current);
       if (next.has(categoryId)) next.delete(categoryId);
       else next.add(categoryId);
-      return next;
+      return { ...prev, [filter]: next };
     });
   };
 
@@ -313,64 +367,114 @@ export function ProductList() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 pb-24">
-        {filteredProducts.length === 0 ? (
-          <div className="text-center py-12 text-[var(--color-text-secondary)]">
-            <Package className="w-12 h-12 mx-auto mb-3 opacity-50" />
-            <p>{filter === 'low-stock' ? t('product.noProductsLowStock') : t('product.noProducts')}</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {sortedCategoryIds.map((categoryId) => {
-              const categoryProducts = groupedProducts[categoryId];
-              const isCollapsed = collapsedCategories.has(categoryId);
-              const categoryColor = getCategoryColor(categoryId);
-              const categoryIcon = getCategoryIcon(categoryId);
-              
-              return (
-                <div key={categoryId}>
-                  <button
-                    onClick={() => toggleCategory(categoryId)}
-                    className="flex items-center gap-2 w-full py-2 text-left"
-                  >
-                    {isCollapsed ? (
-                      <ChevronRight className="w-5 h-5" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5" />
-                    )}
-                    <FontAwesomeIcon
-                      icon={iconMap[categoryIcon] || faFolder}
-                      className="w-4 h-4"
-                      style={{ color: categoryColor }}
+      {/* Important Section */}
+      {(() => {
+        const importantProducts = filteredProducts.filter((p) => p.important);
+        if (importantProducts.length === 0) return null;
+        
+        const isCollapsed = collapsedCategories[filter].has('important');
+        
+        return (
+          <div className="mb-4 px-4">
+            <button
+              onClick={() => toggleCategory('important')}
+              className="flex items-center gap-2 w-full py-2 text-left"
+            >
+              {isCollapsed ? (
+                <ChevronRight className="w-5 h-5" />
+              ) : (
+                <ChevronDown className="w-5 h-5" />
+              )}
+              <FontAwesomeIcon
+                icon={faStar}
+                className="w-4 h-4 text-yellow-500"
+              />
+              <span className="font-medium">{t('product.important')}</span>
+              <span className="text-[var(--color-text-secondary)]">
+                ({importantProducts.length})
+              </span>
+            </button>
+            {!isCollapsed && (
+              <div className="space-y-2 ml-2">
+                {importantProducts.map((product) => {
+                  const categoryColor = getCategoryColor(product.categoryId);
+                  const categoryIcon = getCategoryIcon(product.categoryId);
+                  return (
+                    <SwipeableRow
+                      key={product.id}
+                      product={product}
+                      categoryColor={categoryColor}
+                      categoryIcon={categoryIcon}
+                      status={getStockStatus(product)}
+                      onEdit={() => handleEdit(product.id)}
+                      onDelete={() => handleDelete(product.id)}
+                      onQuantityChange={(newQty) => updateProduct(product.id, { quantity: newQty })}
+                      onToggleOpened={() => toggleProductOpened(product.id)}
                     />
-                    <span className="font-medium">{getCategoryName(categoryId)}</span>
-                    <span className="text-[var(--color-text-secondary)]">
-                      ({categoryProducts.length})
-                    </span>
-                  </button>
-                  {!isCollapsed && (
-                    <div className="space-y-2 ml-2">
-                      {categoryProducts.map((product) => (
-                        <SwipeableRow
-                          key={product.id}
-                          product={product}
-                          categoryColor={categoryColor}
-                          categoryIcon={categoryIcon}
-                          status={getStockStatus(product)}
-                          onEdit={() => handleEdit(product.id)}
-                          onDelete={() => handleDelete(product.id)}
-                          onQuantityChange={(newQty) => updateProduct(product.id, { quantity: newQty })}
-                          onToggleImportant={() => toggleProductImportant(product.id)}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                  );
+                })}
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        );
+      })()}
+
+      {filteredProducts.length === 0 ? (
+        <div className="flex-1 text-center py-12 text-[var(--color-text-secondary)] px-4">
+          <Package className="w-12 h-12 mx-auto mb-3 opacity-50" />
+          <p>{filter === 'low-stock' ? t('product.noProductsLowStock') : t('product.noProducts')}</p>
+        </div>
+      ) : (
+        <div className="flex-1 overflow-y-auto px-4 pb-24 space-y-4">
+          {sortedCategoryIds.map((categoryId) => {
+            const categoryProducts = groupedProducts[categoryId];
+            const isCollapsed = collapsedCategories[filter].has(categoryId);
+            const categoryColor = getCategoryColor(categoryId);
+            const categoryIcon = getCategoryIcon(categoryId);
+            
+            return (
+              <div key={categoryId}>
+                <button
+                  onClick={() => toggleCategory(categoryId)}
+                  className="flex items-center gap-2 w-full py-2 text-left"
+                >
+                  {isCollapsed ? (
+                    <ChevronRight className="w-5 h-5" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5" />
+                  )}
+                  <FontAwesomeIcon
+                    icon={iconMap[categoryIcon] || faFolder}
+                    className="w-4 h-4"
+                    style={{ color: categoryColor }}
+                  />
+                  <span className="font-medium">{getCategoryName(categoryId)}</span>
+                  <span className="text-[var(--color-text-secondary)]">
+                    ({categoryProducts.length})
+                  </span>
+                </button>
+                {!isCollapsed && (
+                  <div className="space-y-2 ml-2">
+                    {categoryProducts.map((product) => (
+                      <SwipeableRow
+                        key={product.id}
+                        product={product}
+                        categoryColor={categoryColor}
+                        categoryIcon={categoryIcon}
+                        status={getStockStatus(product)}
+                        onEdit={() => handleEdit(product.id)}
+                        onDelete={() => handleDelete(product.id)}
+                        onQuantityChange={(newQty) => updateProduct(product.id, { quantity: newQty })}
+                        onToggleOpened={() => toggleProductOpened(product.id)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       <button
         onClick={handleAdd}
