@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { Plus, Search, Minus, Edit2, Trash2, ChevronDown, ChevronRight, Package, AlertTriangle } from 'lucide-react';
+import { Plus, Search, Minus, Trash2, ChevronDown, ChevronRight, Package, AlertTriangle, MoreVertical, Pencil, Trash, Star, StarOff } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faGlassWater, faHouse, faUser, faUtensils, faAppleWhole, faBottleWater, faMugHot, faWineGlass, faPills, faWrench, faShirt, faGamepad, faPaw, faCar, faGift, faBox, faBagShopping, faCookie, faDrumstickBite, faCarrot, faPepperHot, faBroom, faSnowflake, faFolder, faStar } from '@fortawesome/free-solid-svg-icons';
 import { useI18n } from '@/hooks/useI18n';
@@ -47,44 +47,20 @@ interface SwipeableRowProps {
   onDelete: () => void;
   onQuantityChange: (newQuantity: number) => void;
   onToggleOpened: () => void;
+  onToggleImportant: () => void;
+  menuOpen: string | null;
+  setMenuOpen: (id: string | null) => void;
 }
 
-function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, onDelete, onQuantityChange, onToggleOpened }: SwipeableRowProps) {
+function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, onDelete, onQuantityChange, onToggleOpened, onToggleImportant, menuOpen, setMenuOpen }: SwipeableRowProps) {
   const { t, language } = useI18n();
   const { getUnitName } = useStore();
   const [offsetX, setOffsetX] = useState(0);
   const [startX, setStartX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
   const [showSwipeActions, setShowSwipeActions] = useState(false);
   const rowRef = useRef<HTMLDivElement>(null);
-  const pressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const SWIPE_THRESHOLD = 80;
-  const LONG_PRESS_DURATION = 1000;
-
-  const handlePointerDown = () => {
-    setIsPressed(true);
-    pressTimerRef.current = setTimeout(() => {
-      onEdit();
-      setIsPressed(false);
-    }, LONG_PRESS_DURATION);
-  };
-
-  const handlePointerUp = () => {
-    setIsPressed(false);
-    if (pressTimerRef.current) {
-      clearTimeout(pressTimerRef.current);
-      pressTimerRef.current = null;
-    }
-  };
-
-  const handlePointerLeave = () => {
-    setIsPressed(false);
-    if (pressTimerRef.current) {
-      clearTimeout(pressTimerRef.current);
-      pressTimerRef.current = null;
-    }
-  };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (showSwipeActions) return;
@@ -113,12 +89,6 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
     setOffsetX(0);
   };
 
-  const handleRowClick = () => {
-    if (showSwipeActions) {
-      setShowSwipeActions(false);
-    }
-  };
-
   return (
     <div className="relative overflow-hidden rounded-xl">
       <div className="absolute inset-0 flex">
@@ -145,19 +115,13 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
             setShowSwipeActions(false);
           }}
         >
-          <Edit2 className="w-6 h-6" />
+          <Pencil className="w-6 h-6" />
         </div>
       </div>
       <div
         ref={rowRef}
-        className={`relative bg-[var(--color-surface)] transition-transform ${
-          isPressed ? 'scale-[0.98]' : ''
-        }`}
+        className="relative bg-[var(--color-surface)] transition-transform"
         style={{ transform: showSwipeActions ? 'none' : `translateX(${offsetX}px)` }}
-        onClick={handleRowClick}
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp}
-        onPointerLeave={handlePointerLeave}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -214,6 +178,54 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
               >
                 <Plus className="w-4 h-4" />
               </button>
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setMenuOpen(menuOpen === product.id ? null : product.id);
+                  }}
+                  className="w-10 h-10 rounded-lg hover:bg-[var(--color-border)] flex items-center justify-center transition-colors"
+                >
+                  <MoreVertical className="w-4 h-4" />
+                </button>
+                {menuOpen === product.id && (
+                  <div className="absolute right-0 top-full mt-1 z-50 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg shadow-lg overflow-hidden min-w-36">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit();
+                        setMenuOpen(null);
+                      }}
+                      className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[var(--color-border)] text-left"
+                    >
+                      <Pencil className="w-4 h-4" />
+                      <span>{t('actions.edit')}</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleImportant();
+                        setMenuOpen(null);
+                      }}
+                      className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[var(--color-border)] text-left"
+                    >
+                      {product.important ? <StarOff className="w-4 h-4 text-yellow-500" /> : <Star className="w-4 h-4 text-yellow-500" />}
+                      <span>{product.important ? t('actions.removeImportant') : t('actions.addImportant')}</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete();
+                        setMenuOpen(null);
+                      }}
+                      className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[var(--color-border)] text-left text-red-600"
+                    >
+                      <Trash className="w-4 h-4" />
+                      <span>{t('actions.delete')}</span>
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -224,12 +236,13 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
 
 export function ProductList() {
   const { t } = useI18n();
-  const { products, categories, updateProduct, deleteProduct, toggleProductOpened, getCategoryName, getCategoryColor, getCategoryIcon } = useStore();
+  const { products, categories, updateProduct, deleteProduct, toggleProductOpened, toggleProductImportant, getCategoryName, getCategoryColor, getCategoryIcon } = useStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<string | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<FilterType>('all');
+  const [menuOpen, setMenuOpen] = useState<string | null>(null);
   const [collapsedCategories, setCollapsedCategories] = useState<Record<FilterType, Set<string>>>({
     'all': new Set(),
     'low-stock': new Set(),
@@ -240,6 +253,14 @@ export function ProductList() {
       setCollapsedCategories((prev) => ({ ...prev, 'low-stock': new Set() }));
     }
   }, [filter]);
+
+  useEffect(() => {
+    const handleClick = () => setMenuOpen(null);
+    if (menuOpen) {
+      document.addEventListener('click', handleClick);
+      return () => document.removeEventListener('click', handleClick);
+    }
+  }, [menuOpen]);
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
@@ -410,6 +431,9 @@ export function ProductList() {
                       onDelete={() => handleDelete(product.id)}
                       onQuantityChange={(newQty) => updateProduct(product.id, { quantity: newQty })}
                       onToggleOpened={() => toggleProductOpened(product.id)}
+                      onToggleImportant={() => toggleProductImportant(product.id)}
+                      menuOpen={menuOpen}
+                      setMenuOpen={setMenuOpen}
                     />
                   );
                 })}
@@ -466,6 +490,9 @@ export function ProductList() {
                         onDelete={() => handleDelete(product.id)}
                         onQuantityChange={(newQty) => updateProduct(product.id, { quantity: newQty })}
                         onToggleOpened={() => toggleProductOpened(product.id)}
+                        onToggleImportant={() => toggleProductImportant(product.id)}
+                        menuOpen={menuOpen}
+                        setMenuOpen={setMenuOpen}
                       />
                     ))}
                   </div>

@@ -105,7 +105,9 @@
     "close": "Close",
     "confirm": "Confirm",
     "export": "Export",
-    "import": "Import"
+    "import": "Import",
+    "addImportant": "Mark as important",
+    "removeImportant": "Remove from important"
   },
   "errors": {
     "required": "This field is required",

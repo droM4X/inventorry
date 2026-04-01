@@ -105,7 +105,9 @@
     "close": "Bezárás",
     "confirm": "Megerősítés",
     "export": "Export",
-    "import": "Import"
+    "import": "Import",
+    "addImportant": "Fontossá tétel",
+    "removeImportant": "Eltávolítás a fontosak közül"
   },
   "errors": {
     "required": "Ez a mező kötelező",
