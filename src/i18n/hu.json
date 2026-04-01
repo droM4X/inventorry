@@ -51,7 +51,7 @@
     "color": "Szín",
     "icon": "Ikon",
     "noCategories": "Még nincs kategória",
-    "confirmDelete": "Biztosan törölni szeretnéd ezt a kategóriát? A termékek az kategorizálatlanba kerülnek.",
+    "confirmDelete": "Biztosan törölni szeretnéd ezt a kategóriát?",
     "uncategorized": "Kategorizálatlan",
     "hasProducts": "Nem törölhető - termékek használják ezt a kategóriát"
   },

@@ -66,6 +66,7 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
       quantity: Number(quantity),
       lowStockThreshold: threshold === '' ? 0 : Number(threshold),
       important: product?.important ?? false,
+      opened: product?.opened ?? false,
     };
 
     if (product) {

@@ -69,6 +69,14 @@ export const useStore = create<StoreState>()(
         }));
       },
 
+      toggleProductOpened: (id) => {
+        set((state) => ({
+          products: state.products.map((p) =>
+            p.id === id ? { ...p, opened: !p.opened, updatedAt: Date.now() } : p
+          ),
+        }));
+      },
+
       deleteProduct: (id) => {
         const product = get().products.find((p) => p.id === id);
         const unit = get().units.find((u) => u.id === product?.unitId);

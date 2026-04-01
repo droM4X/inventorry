@@ -7,6 +7,7 @@ export interface Product {
   quantity: number;
   lowStockThreshold: number;
   important: boolean;
+  opened: boolean;
   createdAt: number;
   updatedAt: number;
 }
@@ -50,6 +51,7 @@ export interface StoreState {
   addProduct: (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => void;
   updateProduct: (id: string, updates: Partial<Product>) => void;
   toggleProductImportant: (id: string) => void;
+  toggleProductOpened: (id: string) => void;
   deleteProduct: (id: string) => void;
   addCategory: (category: Omit<Category, 'id' | 'order'>) => void;
   updateCategory: (id: string, updates: Partial<Category>) => void;
