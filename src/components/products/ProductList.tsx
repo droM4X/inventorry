@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { Plus, Search, Minus, Trash2, ChevronDown, ChevronRight, Package, AlertTriangle, MoreVertical, Pencil, Trash, Star, StarOff } from 'lucide-react';
+import { Plus, Search, Minus, ChevronDown, ChevronRight, Package, AlertTriangle, MoreVertical, Pencil, Star, StarOff } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faGlassWater, faHouse, faUser, faUtensils, faAppleWhole, faBottleWater, faMugHot, faWineGlass, faPills, faWrench, faShirt, faGamepad, faPaw, faCar, faGift, faBox, faBagShopping, faCookie, faDrumstickBite, faCarrot, faPepperHot, faBroom, faSnowflake, faFolder, faStar } from '@fortawesome/free-solid-svg-icons';
 import { useI18n } from '@/hooks/useI18n';
@@ -57,11 +57,9 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
   const { getUnitName } = useStore();
   const [offsetX, setOffsetX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [showSwipeActions, setShowSwipeActions] = useState(false);
   const rowRef = useRef<HTMLDivElement>(null);
   const swipeRef = useRef<{ startX: number; startY: number }>({ startX: 0, startY: 0 });
-  const SWIPE_THRESHOLD = 80;
-  const TAP_THRESHOLD = 10;
+  const SWIPE_THRESHOLD = 60;
 
   const handleTouchStart = (e: React.TouchEvent) => {
     swipeRef.current = {
@@ -91,63 +89,25 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
     setIsDragging(false);
     const absOffset = Math.abs(offsetX);
     
-    if (absOffset < TAP_THRESHOLD) {
-      setOffsetX(0);
-      setShowSwipeActions(false);
-    } else if (absOffset > SWIPE_THRESHOLD) {
-      setShowSwipeActions(true);
-      setOffsetX(0);
-    } else {
-      setOffsetX(0);
-      setShowSwipeActions(false);
+    if (absOffset > SWIPE_THRESHOLD) {
+      if (offsetX > 0) {
+        onDelete();
+      } else {
+        onEdit();
+      }
     }
-  };
-
-  const handleSwipeDelete = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onDelete();
-    setShowSwipeActions(false);
-  };
-
-  const handleSwipeToggleOpened = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onToggleOpened();
-    setShowSwipeActions(false);
-  };
-
-  const dismissSwipe = () => {
-    setShowSwipeActions(false);
+    setOffsetX(0);
   };
 
   return (
     <div className="relative">
-      {showSwipeActions && (
-        <div className="absolute inset-0 flex z-20 pointer-events-none">
-          <button
-            onClick={handleSwipeDelete}
-            className="w-20 bg-red-500 text-white flex items-center justify-center pointer-events-auto"
-          >
-            <Trash2 className="w-6 h-6" />
-          </button>
-          <div className="flex-1" />
-          <button
-            onClick={handleSwipeToggleOpened}
-            className="w-20 bg-orange-500 text-white flex items-center justify-center pointer-events-auto"
-          >
-            <Pencil className="w-6 h-6" />
-          </button>
-        </div>
-      )}
       <div
         ref={rowRef}
-        className={`relative bg-[var(--color-surface)] transition-transform duration-200 ${
-          showSwipeActions ? 'translate-x-0' : ''
-        }`}
-        style={{ transform: `translateX(${showSwipeActions ? 0 : offsetX}px)` }}
+        className="relative bg-[var(--color-surface)] transition-transform duration-200"
+        style={{ transform: `translateX(${offsetX}px)` }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        onClick={dismissSwipe}
       >
         <div
           className={`p-3 rounded-xl border transition-colors relative ${
@@ -212,18 +172,7 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
                   <MoreVertical className="w-4 h-4" />
                 </button>
                 {menuOpen === product.id && (
-                  <div className="absolute right-0 top-full mt-1 z-50 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg shadow-lg overflow-hidden min-w-36">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onEdit();
-                        setMenuOpen(null);
-                      }}
-                      className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[var(--color-border)] text-left"
-                    >
-                      <Pencil className="w-4 h-4" />
-                      <span>{t('actions.edit')}</span>
-                    </button>
+                  <div className="absolute right-0 top-full mt-1 z-[60] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg shadow-lg min-w-36">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -238,13 +187,13 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        onDelete();
+                        onToggleOpened();
                         setMenuOpen(null);
                       }}
-                      className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[var(--color-border)] text-left text-red-600"
+                      className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[var(--color-border)] text-left"
                     >
-                      <Trash className="w-4 h-4" />
-                      <span>{t('actions.delete')}</span>
+                      <Pencil className="w-4 h-4 text-orange-500" />
+                      <span>{product.opened ? t('actions.markClosed') : t('actions.markOpened')}</span>
                     </button>
                   </div>
                 )}

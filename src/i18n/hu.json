@@ -107,7 +107,9 @@
     "export": "Export",
     "import": "Import",
     "addImportant": "Fontossá tétel",
-    "removeImportant": "Eltávolítás a fontosak közül"
+    "removeImportant": "Eltávolítás a fontosak közül",
+    "markOpened": "Megnyitás",
+    "markClosed": "Bezárás"
   },
   "errors": {
     "required": "Ez a mező kötelező",

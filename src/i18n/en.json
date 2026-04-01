@@ -107,7 +107,9 @@
     "export": "Export",
     "import": "Import",
     "addImportant": "Mark as important",
-    "removeImportant": "Remove from important"
+    "removeImportant": "Remove from important",
+    "markOpened": "Mark as opened",
+    "markClosed": "Mark as closed"
   },
   "errors": {
     "required": "This field is required",
