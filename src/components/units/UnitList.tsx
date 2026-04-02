@@ -6,7 +6,11 @@ import { Modal } from '@/components/layout/Modal';
 import { ConfirmDialog } from '@/components/layout/ConfirmDialog';
 import { UnitModal } from './UnitModal';
 
-export function UnitList() {
+interface UnitListProps {
+  inSettingsPage?: boolean;
+}
+
+export function UnitList({ inSettingsPage = false }: UnitListProps) {
   const { t, language } = useI18n();
   const { units, deleteUnit, canDeleteUnit, getUnitName } = useStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,13 +43,15 @@ export function UnitList() {
 
   return (
     <div className="p-4 space-y-4">
-      <button
-        onClick={handleAdd}
-        className="w-full flex items-center justify-center gap-2 p-4 rounded-xl bg-[var(--color-primary)] text-white font-medium hover:bg-[var(--color-primary-hover)] transition-colors"
-      >
-        <Plus className="w-5 h-5" />
-        {t('unit.add')}
-      </button>
+      {!inSettingsPage && (
+        <button
+          onClick={handleAdd}
+          className="w-full flex items-center justify-center gap-2 p-4 rounded-xl bg-[var(--color-primary)] text-white font-medium hover:bg-[var(--color-primary-hover)] transition-colors"
+        >
+          <Plus className="w-5 h-5" />
+          {t('unit.add')}
+        </button>
+      )}
 
       {sortedUnits.length === 0 ? (
         <div className="text-center py-12 text-[var(--color-text-secondary)]">
@@ -109,6 +115,15 @@ export function UnitList() {
         title={t('unit.delete')}
         message={t('unit.confirmDelete')}
       />
+
+      {inSettingsPage && (
+        <button
+          onClick={handleAdd}
+          className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[var(--color-primary)] text-white shadow-lg flex items-center justify-center hover:bg-[var(--color-primary-hover)] transition-colors z-40"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
+      )}
     </div>
   );
 }
