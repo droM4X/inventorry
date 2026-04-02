@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Plus, Search, Minus, ChevronDown, ChevronRight, Package, AlertTriangle, MoreVertical, Pencil as PencilIcon, Star, StarOff, Trash2 } from 'lucide-react';
+import { Plus, Minus, ChevronDown, ChevronRight, Package, AlertTriangle, MoreVertical, Pencil as PencilIcon, Star, StarOff, Trash2 } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faGlassWater, faHouse, faUser, faUtensils, faAppleWhole, faBottleWater, faMugHot, faWineGlass, faPills, faWrench, faShirt, faGamepad, faPaw, faCar, faGift, faBox, faBagShopping, faCookie, faDrumstickBite, faCarrot, faPepperHot, faBroom, faSnowflake, faFolder, faStar, faWineGlassEmpty } from '@fortawesome/free-solid-svg-icons';
 import { useI18n } from '@/hooks/useI18n';
@@ -227,13 +227,16 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
   );
 }
 
-export function ProductList() {
+interface ProductListProps {
+  searchQuery?: string;
+}
+
+export function ProductList({ searchQuery = '' }: ProductListProps) {
   const { t } = useI18n();
   const { products, categories, updateProduct, deleteProduct, toggleProductOpened, toggleProductImportant, getCategoryName, getCategoryColor, getCategoryIcon, collapsedSections, toggleCollapsedSection } = useStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<string | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<FilterType>('all');
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
 
@@ -334,16 +337,6 @@ export function ProductList() {
   return (
     <div className="flex flex-col h-full">
       <div className="p-4 space-y-3">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-secondary)]" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t('product.search')}
-            className="w-full pl-10 pr-4 py-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]"
-          />
-        </div>
         <div className="flex gap-2">
           <button
             onClick={() => setFilter('all')}

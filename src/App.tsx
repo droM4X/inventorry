@@ -10,9 +10,17 @@ import { VersionNotification, useVersionCheck } from '@/components/layout/Versio
 function App() {
   const [currentView, setCurrentView] = useState<View>('products');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const { t, setLanguage } = useI18n();
   const { language, theme, storedVersion, setStoredVersion } = useStore();
   const { showNotification, dismissNotification } = useVersionCheck(storedVersion, setStoredVersion);
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    if (query && currentView !== 'products') {
+      setCurrentView('products');
+    }
+  };
 
   useEffect(() => {
     setLanguage(language);
@@ -43,13 +51,13 @@ function App() {
   const renderContent = () => {
     switch (currentView) {
       case 'products':
-        return <ProductList />;
+        return <ProductList searchQuery={searchQuery} />;
       case 'logs':
         return <Logs />;
       case 'settings':
         return <Settings />;
       default:
-        return <ProductList />;
+        return <ProductList searchQuery={searchQuery} />;
     }
   };
 
@@ -59,6 +67,7 @@ function App() {
       <Header
         onMenuClick={() => setIsDrawerOpen(true)}
         title={getTitle()}
+        onSearchChange={handleSearchChange}
       />
       <Drawer
         isOpen={isDrawerOpen}

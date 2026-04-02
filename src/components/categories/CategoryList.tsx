@@ -105,9 +105,10 @@ function SortableItem({ category, onEdit, onDelete, canDelete }: SortableItemPro
 
 interface CategoryListProps {
   inSettingsPage?: boolean;
+  onAdd?: () => void;
 }
 
-export function CategoryList({ inSettingsPage = false }: CategoryListProps) {
+export function CategoryList({ inSettingsPage = false, onAdd }: CategoryListProps) {
   const { t } = useI18n();
   const { categories, deleteCategory, canDeleteCategory, reorderCategories } = useStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -129,8 +130,12 @@ export function CategoryList({ inSettingsPage = false }: CategoryListProps) {
   };
 
   const handleAdd = () => {
-    setEditingCategory(null);
-    setIsModalOpen(true);
+    if (onAdd) {
+      onAdd();
+    } else {
+      setEditingCategory(null);
+      setIsModalOpen(true);
+    }
   };
 
   const handleEdit = (id: string) => {

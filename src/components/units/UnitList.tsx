@@ -8,9 +8,10 @@ import { UnitModal } from './UnitModal';
 
 interface UnitListProps {
   inSettingsPage?: boolean;
+  onAdd?: () => void;
 }
 
-export function UnitList({ inSettingsPage = false }: UnitListProps) {
+export function UnitList({ inSettingsPage = false, onAdd }: UnitListProps) {
   const { t, language } = useI18n();
   const { units, deleteUnit, canDeleteUnit, getUnitName } = useStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,8 +19,12 @@ export function UnitList({ inSettingsPage = false }: UnitListProps) {
   const [deletingUnit, setDeletingUnit] = useState<string | null>(null);
 
   const handleAdd = () => {
-    setEditingUnit(null);
-    setIsModalOpen(true);
+    if (onAdd) {
+      onAdd();
+    } else {
+      setEditingUnit(null);
+      setIsModalOpen(true);
+    }
   };
 
   const handleEdit = (id: string) => {
