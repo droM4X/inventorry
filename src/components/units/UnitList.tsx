@@ -124,7 +124,7 @@ export function UnitList({ inSettingsPage = false, onAdd }: UnitListProps) {
       {inSettingsPage && (
         <button
           onClick={handleAdd}
-          className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[var(--color-primary)] text-white shadow-lg flex items-center justify-center hover:bg-[var(--color-primary-hover)] transition-colors z-40"
+          className="fixed bottom-16 right-6 w-14 h-14 rounded-full bg-[var(--color-primary)] text-white shadow-lg flex items-center justify-center hover:bg-[var(--color-primary-hover)] transition-colors z-40"
         >
           <Plus className="w-6 h-6" />
         </button>

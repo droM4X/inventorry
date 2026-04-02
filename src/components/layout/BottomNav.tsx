@@ -18,26 +18,26 @@ export function BottomNav({ currentView, onNavigate }: BottomNavProps) {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[var(--color-surface)] border-t border-[var(--color-border)] pb-safe">
-      <div className="flex items-center justify-around py-2 px-4">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[var(--color-surface)]/70 backdrop-blur-sm border-t border-[var(--color-border)]">
+      <div className="flex items-center justify-around py-1 px-4">
         {navItems.map(({ view, icon: Icon, labelKey }) => (
           <button
             key={view}
             onClick={() => onNavigate(view)}
-            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-colors ${
+            className={`flex flex-col items-center justify-center px-6 py-1.5 rounded-full transition-colors ${
               currentView === view
                 ? 'text-[var(--color-primary)]'
                 : 'text-[var(--color-text-secondary)]'
             }`}
           >
-            <div className={`w-12 h-10 rounded-full flex items-center justify-center ${
+            <div className={`w-11 h-9 rounded-full flex flex-col items-center justify-center gap-0.5 ${
               currentView === view
                 ? 'bg-[var(--color-primary)] text-white'
                 : ''
             }`}>
-              <Icon className="w-6 h-6" />
+              <Icon className="w-5 h-5" />
+              <span className="text-[10px] font-medium leading-none">{t(labelKey)}</span>
             </div>
-            <span className="text-xs font-medium">{t(labelKey)}</span>
           </button>
         ))}
       </div>
