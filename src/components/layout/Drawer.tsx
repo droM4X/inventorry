@@ -1,4 +1,4 @@
-import { X, Package, Folder, Scale, Settings, Info, ScrollText } from 'lucide-react';
+import { X, Package, Settings, ScrollText } from 'lucide-react';
 import { useI18n } from '@/hooks/useI18n';
 
 type View = 'products' | 'categories' | 'units' | 'settings' | 'about' | 'logs';
@@ -15,11 +15,8 @@ export function Drawer({ isOpen, onClose, currentView, onNavigate }: DrawerProps
 
   const navItems: { view: View; icon: typeof Package; labelKey: string }[] = [
     { view: 'products', icon: Package, labelKey: 'nav.products' },
-    { view: 'categories', icon: Folder, labelKey: 'nav.categories' },
-    { view: 'units', icon: Scale, labelKey: 'nav.units' },
-    { view: 'logs', icon: ScrollText, labelKey: 'nav.logs' },
     { view: 'settings', icon: Settings, labelKey: 'nav.settings' },
-    { view: 'about', icon: Info, labelKey: 'nav.about' },
+    { view: 'logs', icon: ScrollText, labelKey: 'nav.logs' },
   ];
 
   const handleNavigate = (view: View) => {
