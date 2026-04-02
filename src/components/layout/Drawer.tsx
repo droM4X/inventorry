@@ -1,7 +1,7 @@
 import { X, Package, Settings, ScrollText } from 'lucide-react';
 import { useI18n } from '@/hooks/useI18n';
 
-type View = 'products' | 'categories' | 'units' | 'settings' | 'about' | 'logs';
+type View = 'products' | 'settings' | 'logs';
 
 interface DrawerProps {
   isOpen: boolean;
