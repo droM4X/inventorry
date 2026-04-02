@@ -94,7 +94,9 @@
     "exportSuccess": "Data exported successfully",
     "importSuccess": "Data imported successfully",
     "importError": "Failed to import data. Invalid format.",
-    "clearSuccess": "All data cleared"
+    "clearSuccess": "All data cleared",
+    "search": "Search...",
+    "dataManagement": "Data Management"
   },
   "actions": {
     "save": "Save",

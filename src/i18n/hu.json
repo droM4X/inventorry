@@ -11,7 +11,7 @@
     "offlineSupport": "Offline támogatás"
   },
   "nav": {
-    "products": "Termékek",
+    "products": "Készletek",
     "categories": "Kategóriák",
     "units": "Mértékegységek",
     "settings": "Beállítások",
@@ -23,7 +23,7 @@
     "lowStock": "Alacsony készlet"
   },
   "product": {
-    "title": "Termékek",
+    "title": "Készletek",
     "add": "Termék hozzáadása",
     "edit": "Termék szerkesztése",
     "delete": "Termék törlése",
@@ -94,7 +94,9 @@
     "exportSuccess": "Adatok sikeresen exportálva",
     "importSuccess": "Adatok sikeresen importálva",
     "importError": "Sikertelen importálás. Érvénytelen formátum.",
-    "clearSuccess": "Összes adat törölve"
+    "clearSuccess": "Összes adat törölve",
+    "search": "Keresés...",
+    "dataManagement": "Adatkezelés"
   },
   "actions": {
     "save": "Mentés",
