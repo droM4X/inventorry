@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Download, Upload, Trash2, Globe, Palette, Check, Folder, Scale, Info, Clock, Database, Settings as SettingsIcon } from 'lucide-react';
+import { Download, Upload, Trash2, Globe, Palette, Check, Folder, Scale, Info, History, Database, Settings as SettingsIcon } from 'lucide-react';
 import { useI18n } from '@/hooks/useI18n';
 import { useStore } from '@/store/useStore';
 import { ConfirmDialog } from '@/components/layout/ConfirmDialog';
@@ -155,7 +155,7 @@ export function Settings() {
 
       <section className="space-y-3">
         <h2 className="flex items-center gap-2 text-lg font-semibold">
-          <Clock className="w-5 h-5" />
+          <History className="w-5 h-5" />
           {t('settings.logs')}
         </h2>
         <div className="flex items-center gap-3">
