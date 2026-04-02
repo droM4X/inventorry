@@ -20,7 +20,7 @@
   },
   "filter": {
     "all": "Mind",
-    "lowStock": "Alacsony készlet"
+    "lowStock": "Kevés készlet"
   },
   "product": {
     "title": "Készletek",

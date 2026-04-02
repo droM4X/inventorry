@@ -35,16 +35,7 @@ function App() {
   }, [theme]);
 
   const getTitle = () => {
-    switch (currentView) {
-      case 'products':
-        return t('product.title');
-      case 'logs':
-        return t('logs.title');
-      case 'settings':
-        return t('settings.title');
-      default:
-        return t('app.name');
-    }
+    return t('app.name');
   };
 
   const renderContent = () => {

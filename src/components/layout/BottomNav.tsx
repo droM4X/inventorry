@@ -1,4 +1,4 @@
-import { Package, ScrollText, Settings } from 'lucide-react';
+import { Package, Clock, Settings } from 'lucide-react';
 import { useI18n } from '@/hooks/useI18n';
 
 type View = 'products' | 'settings' | 'logs';
@@ -13,7 +13,7 @@ export function BottomNav({ currentView, onNavigate }: BottomNavProps) {
 
   const navItems: { view: View; icon: typeof Package; labelKey: string }[] = [
     { view: 'products', icon: Package, labelKey: 'nav.products' },
-    { view: 'logs', icon: ScrollText, labelKey: 'nav.logs' },
+    { view: 'logs', icon: Clock, labelKey: 'nav.logs' },
     { view: 'settings', icon: Settings, labelKey: 'nav.settings' },
   ];
 
