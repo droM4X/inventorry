@@ -129,7 +129,8 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
               : status === 'low'
               ? 'bg-[var(--color-low-stock)] border-yellow-300 dark:border-yellow-800'
               : 'bg-[var(--color-surface)] border-[var(--color-border)]'
-          }`}
+          } ${product.opened ? 'border-l-4 rounded-l-xl' : ''}`}
+          style={product.opened ? { borderLeftColor: categoryColor } : undefined}
         >
           <div className="flex items-center gap-2 relative">
             <FontAwesomeIcon
@@ -142,17 +143,14 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
                 {product.name}
                 {product.subname && <span className="font-normal text-[var(--color-text-secondary)]"> ({product.subname})</span>}
               </div>
-              <div className="text-sm text-[var(--color-text-secondary)] flex items-center gap-2">
-                <span>
-                  {t('product.quantityFormat', {
-                    quantity: product.quantity,
-                    unit: getUnitName(product.unitId, language),
-                  })}
-                </span>
-                {product.opened && (
-                  <FontAwesomeIcon icon={faWineGlassEmpty} className="w-4 h-4 text-orange-500" />
-                )}
-                {product.important && (
+                <div className="text-sm text-[var(--color-text-secondary)] flex items-center gap-2">
+                  <span>
+                    {t('product.quantityFormat', {
+                      quantity: product.quantity,
+                      unit: getUnitName(product.unitId, language),
+                    })}
+                  </span>
+                  {product.important && (
                   <span className="px-2 py-0.5 text-xs font-medium bg-red-500 text-white rounded-full">
                     {t('product.important')}
                   </span>
