@@ -1,36 +1,57 @@
-import { Menu, Moon, Sun, Monitor } from 'lucide-react';
-import { useStore } from '@/store/useStore';
-import { useEffect } from 'react';
+import { Menu, Search, X } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
 
 interface HeaderProps {
   onMenuClick: () => void;
   title: string;
+  onSearchChange?: (query: string) => void;
 }
 
-export function Header({ onMenuClick, title }: HeaderProps) {
-  const { theme, setTheme } = useStore();
+export function Header({ onMenuClick, title, onSearchChange }: HeaderProps) {
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const root = document.documentElement;
-    if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
+    if (isSearchExpanded && searchInputRef.current) {
+      searchInputRef.current.focus();
     }
-  }, [theme]);
+  }, [isSearchExpanded]);
 
-  const cycleTheme = () => {
-    if (theme === 'light') setTheme('dark');
-    else if (theme === 'dark') setTheme('system');
-    else setTheme('light');
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isSearchExpanded) {
+        handleCloseSearch();
+      }
+    };
+
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (isSearchExpanded && !target.closest('.search-container')) {
+        handleCloseSearch();
+      }
+    };
+
+    if (isSearchExpanded) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSearchExpanded]);
+
+  const handleCloseSearch = () => {
+    setIsSearchExpanded(false);
+    setSearchQuery('');
+    onSearchChange?.('');
   };
 
-  const getThemeIcon = () => {
-    switch (theme) {
-      case 'light': return <Sun className="h-5 w-5" />;
-      case 'dark': return <Moon className="h-5 w-5" />;
-      default: return <Monitor className="h-5 w-5" />;
-    }
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    onSearchChange?.(value);
   };
 
   return (
@@ -45,12 +66,35 @@ export function Header({ onMenuClick, title }: HeaderProps) {
           </button>
           <h1 className="text-lg font-semibold">{title}</h1>
         </div>
-        <button
-          onClick={cycleTheme}
-          className="p-2 rounded-lg hover:bg-[var(--color-border)] transition-colors"
-        >
-          {getThemeIcon()}
-        </button>
+
+        {isSearchExpanded ? (
+          <div className="search-container absolute left-0 right-0 top-0 h-14 px-4 flex items-center bg-[var(--color-surface)] transition-all duration-200">
+            <div className="relative flex-1 flex items-center">
+              <Search className="absolute left-3 h-5 w-5 text-[var(--color-text-secondary)]" />
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                placeholder="Keresés..."
+                className="w-full h-10 pl-10 pr-10 rounded-lg bg-[var(--color-background)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all"
+              />
+              <button
+                onClick={handleCloseSearch}
+                className="absolute right-2 p-1.5 rounded-lg hover:bg-[var(--color-border)] transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => setIsSearchExpanded(true)}
+            className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-[var(--color-border)] transition-colors"
+          >
+            <Search className="h-5 w-5" />
+          </button>
+        )}
       </div>
     </header>
   );
