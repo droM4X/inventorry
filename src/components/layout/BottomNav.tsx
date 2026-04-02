@@ -19,18 +19,18 @@ export function BottomNav({ currentView, onNavigate }: BottomNavProps) {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[var(--color-surface)]/70 backdrop-blur-sm border-t border-[var(--color-border)]">
-      <div className="flex items-center justify-around py-1 px-4">
+      <div className="flex items-center justify-around py-1 px-2">
         {navItems.map(({ view, icon: Icon, labelKey }) => (
           <button
             key={view}
             onClick={() => onNavigate(view)}
-            className={`flex flex-col items-center justify-center px-6 py-1.5 rounded-full transition-colors ${
+            className={`flex flex-col items-center justify-center py-1.5 transition-colors ${
               currentView === view
                 ? 'text-[var(--color-primary)]'
                 : 'text-[var(--color-text-secondary)]'
             }`}
           >
-            <div className={`w-11 h-9 rounded-full flex flex-col items-center justify-center gap-0.5 ${
+            <div className={`w-20 h-10 rounded-full flex flex-col items-center justify-center gap-0.5 ${
               currentView === view
                 ? 'bg-[var(--color-primary)] text-white'
                 : ''
