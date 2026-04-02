@@ -173,7 +173,7 @@ export function Settings() {
       <section className="space-y-3">
         <h2 className="flex items-center gap-2 text-lg font-semibold">
           <Database className="w-5 h-5" />
-          Data
+          {t('settings.dataManagement')}
         </h2>
         <div className="space-y-2">
           <button
