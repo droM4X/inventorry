@@ -12,6 +12,12 @@ export function Header({ onMenuClick, title, onSearchChange }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);
 
+  const handleCloseSearch = () => {
+    setIsSearchExpanded(false);
+    setSearchQuery('');
+    onSearchChange?.('');
+  };
+
   useEffect(() => {
     if (isSearchExpanded && searchInputRef.current) {
       searchInputRef.current.focus();
@@ -19,35 +25,33 @@ export function Header({ onMenuClick, title, onSearchChange }: HeaderProps) {
   }, [isSearchExpanded]);
 
   useEffect(() => {
+    if (!isSearchExpanded) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isSearchExpanded) {
-        handleCloseSearch();
+      if (e.key === 'Escape') {
+        setIsSearchExpanded(false);
+        setSearchQuery('');
+        onSearchChange?.('');
       }
     };
 
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (isSearchExpanded && !target.closest('.search-container')) {
-        handleCloseSearch();
+      if (!target.closest('.search-container')) {
+        setIsSearchExpanded(false);
+        setSearchQuery('');
+        onSearchChange?.('');
       }
     };
 
-    if (isSearchExpanded) {
-      document.addEventListener('keydown', handleKeyDown);
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isSearchExpanded]);
-
-  const handleCloseSearch = () => {
-    setIsSearchExpanded(false);
-    setSearchQuery('');
-    onSearchChange?.('');
-  };
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
