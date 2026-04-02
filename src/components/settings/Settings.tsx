@@ -1,15 +1,30 @@
 import { useState, useRef } from 'react';
-import { Download, Upload, Trash2, Globe, Palette, Check } from 'lucide-react';
+import { Download, Upload, Trash2, Globe, Palette, Check, Folder, Scale, Info, ScrollText, Database, Settings as SettingsIcon, ChevronLeft } from 'lucide-react';
 import { useI18n } from '@/hooks/useI18n';
 import { useStore } from '@/store/useStore';
 import { ConfirmDialog } from '@/components/layout/ConfirmDialog';
+import { CategoryList } from '@/components/categories';
+import { UnitList } from '@/components/units';
+import { About } from './About';
+
+type SettingsTab = 'settings' | 'categories' | 'units' | 'about';
+
+const tabs = [
+  { id: 'settings', label: 'settings.title', icon: SettingsIcon },
+  { id: 'categories', label: 'category.title', icon: Folder },
+  { id: 'units', label: 'unit.title', icon: Scale },
+  { id: 'about', label: 'nav.about', icon: Info },
+];
 
 export function Settings() {
   const { t, language, setLanguage } = useI18n();
   const { theme, setTheme, exportData, importData, clearAllData, setLanguage: setStoreLanguage, logLimit, setLogLimit } = useStore();
+  const [activeTab, setActiveTab] = useState<SettingsTab>('settings');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [importMessage, setImportMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const tabConfig = tabs.find(tab => tab.id === activeTab);
 
   const handleExport = () => {
     const data = exportData();
@@ -61,7 +76,7 @@ export function Settings() {
     setLogLimit(parseInt(e.target.value, 10));
   };
 
-  return (
+  const renderSettingsContent = () => (
     <div className="p-4 space-y-6">
       <section className="space-y-3">
         <h2 className="flex items-center gap-2 text-lg font-semibold">
@@ -134,7 +149,10 @@ export function Settings() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold">{t('settings.logs')}</h2>
+        <h2 className="flex items-center gap-2 text-lg font-semibold">
+          <ScrollText className="w-5 h-5" />
+          {t('settings.logs')}
+        </h2>
         <div className="flex items-center gap-3">
           <label className="text-sm text-[var(--color-text-secondary)]">
             {t('settings.logLimit')}
@@ -153,7 +171,10 @@ export function Settings() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold">Data</h2>
+        <h2 className="flex items-center gap-2 text-lg font-semibold">
+          <Database className="w-5 h-5" />
+          Data
+        </h2>
         <div className="space-y-2">
           <button
             onClick={handleExport}
@@ -204,6 +225,58 @@ export function Settings() {
         title={t('settings.clearAll')}
         message={t('settings.confirmClear')}
       />
+    </div>
+  );
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'settings':
+        return renderSettingsContent();
+      case 'categories':
+        return <CategoryList />;
+      case 'units':
+        return <UnitList />;
+      case 'about':
+        return <About />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="flex border-b border-[var(--color-border)] overflow-x-auto">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => tab.id !== 'settings' && setActiveTab(tab.id as SettingsTab)}
+            className={`flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+              activeTab === tab.id
+                ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
+                : 'border-transparent hover:text-[var(--color-primary)]'
+            }`}
+          >
+            {tab.icon && <tab.icon className="w-4 h-4" />}
+            {t(tab.label)}
+          </button>
+        ))}
+      </div>
+
+      {activeTab !== 'settings' && (
+        <div className="flex items-center gap-2 px-4 py-3 border-b border-[var(--color-border)]">
+          <button
+            onClick={() => setActiveTab('settings')}
+            className="p-2 rounded-lg hover:bg-[var(--color-border)]"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <h2 className="font-semibold">{t(tabConfig?.label || '')}</h2>
+        </div>
+      )}
+
+      <div className="flex-1 overflow-auto">
+        {renderTabContent()}
+      </div>
     </div>
   );
 }
