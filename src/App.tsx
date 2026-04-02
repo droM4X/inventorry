@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Header, Drawer, type View } from '@/components/layout';
 import { ProductList } from '@/components/products';
-import { CategoryList } from '@/components/categories';
-import { UnitList } from '@/components/units';
-import { Settings, About } from '@/components/settings';
+import { Settings } from '@/components/settings';
 import { Logs } from '@/components/logs';
 import { useI18n } from '@/hooks/useI18n';
 import { useStore } from '@/store/useStore';
@@ -33,16 +31,10 @@ function App() {
     switch (currentView) {
       case 'products':
         return t('product.title');
-      case 'categories':
-        return t('category.title');
-      case 'units':
-        return t('unit.title');
       case 'logs':
         return t('logs.title');
       case 'settings':
         return t('settings.title');
-      case 'about':
-        return t('nav.about');
       default:
         return t('app.name');
     }
@@ -52,16 +44,10 @@ function App() {
     switch (currentView) {
       case 'products':
         return <ProductList />;
-      case 'categories':
-        return <CategoryList />;
-      case 'units':
-        return <UnitList />;
       case 'logs':
         return <Logs />;
       case 'settings':
         return <Settings />;
-      case 'about':
-        return <About />;
       default:
         return <ProductList />;
     }
