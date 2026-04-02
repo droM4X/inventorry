@@ -26,47 +26,6 @@ https://drom4x.github.io/inventorry/
 - FontAwesome (icons)
 - localStorage (persistence)
 
-## Getting Started
-
-```bash
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-
-# Build for production
-npm run build
-```
-
-## Project Structure
-
-```
-src/
-├── components/
-│   ├── categories/     # Category management
-│   ├── layout/        # Header, Drawer, Modals
-│   ├── logs/          # Activity log page
-│   ├── products/      # Product list and modal
-│   ├── settings/      # App settings and about
-│   └── units/         # Unit management
-├── data/
-│   └── defaults.ts    # Default categories and units
-├── hooks/
-│   └── useI18n.tsx    # Internationalization hook
-├── i18n/
-│   ├── en.json        # English translations
-│   └── hu.json        # Hungarian translations
-├── lib/
-│   └── version.ts     # App version
-├── store/
-│   └── useStore.ts    # Zustand store
-├── types/
-│   └── index.ts       # TypeScript interfaces
-├── App.tsx
-└── index.css          # Global styles and CSS variables
-```
-
 ## License
 
 MIT

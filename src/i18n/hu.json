@@ -57,16 +57,16 @@
     "hasProducts": "Nem törölhető - termékek használják ezt a kategóriát"
   },
   "unit": {
-    "title": "Mértékegységek",
-    "add": "Mértékegység hozzáadása",
-    "edit": "Mértékegység szerkesztése",
-    "delete": "Mértékegység törlése",
+    "title": "Egységek",
+    "add": "Egység hozzáadása",
+    "edit": "Egység szerkesztése",
+    "delete": "Egység törlése",
     "name": "Név",
     "nameEn": "Név (angol)",
     "nameHu": "Név (magyar)",
     "abbreviation": "Rövidítés",
     "noUnits": "Még nincs mértékegység",
-    "confirmDelete": "Biztosan törölni szeretnéd ezt a mértékegységet? A termékek darabra állnak át.",
+    "confirmDelete": "Biztosan törölni szeretnéd ezt az egységet? A termékek darabra állnak át.",
     "hasProducts": "Nem törölhető - termékek használják ezt a mértékegységet"
   },
   "logs": {

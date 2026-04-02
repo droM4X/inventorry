@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Header, Drawer, type View } from '@/components/layout';
+import { Header, BottomNav, type View } from '@/components/layout';
 import { ProductList } from '@/components/products';
 import { Settings } from '@/components/settings';
 import { Logs } from '@/components/logs';
@@ -9,7 +9,6 @@ import { VersionNotification, useVersionCheck } from '@/components/layout/Versio
 
 function App() {
   const [currentView, setCurrentView] = useState<View>('products');
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { t, setLanguage } = useI18n();
   const { language, theme, storedVersion, setStoredVersion } = useStore();
@@ -62,22 +61,19 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-background)]">
+    <div className="min-h-screen bg-[var(--color-background)] pb-20">
       {showNotification && <VersionNotification onDismiss={dismissNotification} />}
       <Header
-        onMenuClick={() => setIsDrawerOpen(true)}
         title={getTitle()}
         onSearchChange={handleSearchChange}
-      />
-      <Drawer
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        currentView={currentView}
-        onNavigate={setCurrentView}
       />
       <main className="flex-1">
         {renderContent()}
       </main>
+      <BottomNav
+        currentView={currentView}
+        onNavigate={setCurrentView}
+      />
     </div>
   );
 }

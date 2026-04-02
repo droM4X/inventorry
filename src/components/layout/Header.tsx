@@ -1,13 +1,12 @@
-import { Menu, Search, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 interface HeaderProps {
-  onMenuClick: () => void;
   title: string;
   onSearchChange?: (query: string) => void;
 }
 
-export function Header({ onMenuClick, title, onSearchChange }: HeaderProps) {
+export function Header({ title, onSearchChange }: HeaderProps) {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -62,12 +61,6 @@ export function Header({ onMenuClick, title, onSearchChange }: HeaderProps) {
     <header className="sticky top-0 z-40 bg-[var(--color-surface)] border-b border-[var(--color-border)]">
       <div className="flex h-14 items-center justify-between px-4">
         <div className="flex items-center gap-2">
-          <button
-            onClick={onMenuClick}
-            className="p-2 -ml-2 rounded-lg hover:bg-[var(--color-border)] transition-colors"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
           <h1 className="text-lg font-semibold">{title}</h1>
         </div>
 

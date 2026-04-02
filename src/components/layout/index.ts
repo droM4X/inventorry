@@ -1,5 +1,5 @@
 export { Header } from './Header';
-export { Drawer } from './Drawer';
+export { BottomNav } from './BottomNav';
 export { Modal } from './Modal';
 export { ConfirmDialog } from './ConfirmDialog';
-export type { View } from './Drawer';
+export type { View } from './BottomNav';
