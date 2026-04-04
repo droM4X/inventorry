@@ -370,18 +370,18 @@ export const useStore = create<StoreState>()(
     {
       name: `${STORAGE_PREFIX}runtime`,
       storage: {
-        getItem: (name: string) => {
+        getItem: (_name: string) => {
           const dbName = getLastUsedDatabase();
           const fullKey = `${STORAGE_PREFIX}${dbName}`;
           const data = localStorage.getItem(fullKey);
           return data ? JSON.parse(data) : null;
         },
-        setItem: (name: string, value: unknown) => {
+        setItem: (_name: string, value: unknown) => {
           const dbName = getLastUsedDatabase();
           const fullKey = `${STORAGE_PREFIX}${dbName}`;
           localStorage.setItem(fullKey, JSON.stringify(value));
         },
-        removeItem: (name: string) => {
+        removeItem: (_name: string) => {
           const dbName = getLastUsedDatabase();
           const fullKey = `${STORAGE_PREFIX}${dbName}`;
           localStorage.removeItem(fullKey);

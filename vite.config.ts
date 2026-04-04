@@ -2,8 +2,9 @@ import path from "path"
 import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import { VitePWA } from "vite-plugin-pwa"
-import copy from "vite-plugin-copy"
 import { defineConfig } from "vite"
+// @ts-expect-error - no types available for vite-plugin-copy
+import { copy } from "vite-plugin-copy"
 
 export default defineConfig({
   plugins: [

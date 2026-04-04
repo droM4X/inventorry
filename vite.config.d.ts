@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 declare module 'vite-plugin-copy' {
   import { Plugin } from 'vite';
   
