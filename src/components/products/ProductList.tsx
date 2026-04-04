@@ -248,6 +248,31 @@ export function ProductList({ searchQuery = '' }: ProductListProps) {
     }
   }, [menuOpen]);
 
+  const lastSearchRef = useRef('');
+
+  useEffect(() => {
+    if (searchQuery === lastSearchRef.current) return;
+    lastSearchRef.current = searchQuery;
+    
+    if (searchQuery.trim()) {
+      const matchedCategoryIds = new Set<string>();
+      filteredProducts.forEach((product) => {
+        const catId = product.categoryId || 'uncategorized';
+        matchedCategoryIds.add(catId);
+        if (product.important) {
+          matchedCategoryIds.add('important');
+        }
+      });
+      
+      matchedCategoryIds.forEach((catId) => {
+        const sectionId = `${filter}-${catId}`;
+        if (collapsedSections.includes(sectionId)) {
+          toggleCollapsedSection(sectionId);
+        }
+      });
+    }
+  }, [searchQuery]);
+
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
