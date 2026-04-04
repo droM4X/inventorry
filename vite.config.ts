@@ -2,12 +2,19 @@ import path from "path"
 import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import { VitePWA } from "vite-plugin-pwa"
+import copy from "vite-plugin-copy"
 import { defineConfig } from "vite"
 
 export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    copy({
+      targets: [
+        { src: 'docs/RELEASE_LOG.md', dest: 'public/', rename: 'release_log.md' },
+      ],
+      hook: 'writeBundle',
+    }),
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["favicon.svg", "robots.txt"],
