@@ -49,6 +49,7 @@ export interface StoreState {
   logLimit: number;
   storedVersion: string;
   collapsedSections: string[];
+  activeDatabase: string;
   addProduct: (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => void;
   updateProduct: (id: string, updates: Partial<Product>) => void;
   toggleProductImportant: (id: string) => void;
@@ -76,6 +77,9 @@ export interface StoreState {
   exportData: () => string;
   importData: (jsonString: string) => boolean;
   clearAllData: () => void;
+  setActiveDatabase: (name: string) => void;
+  createDatabase: (name: string) => boolean;
+  getDatabaseList: () => string[];
 }
 
 export type FilterType = 'all' | 'low-stock';

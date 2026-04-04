@@ -5,6 +5,46 @@ import { defaultCategories, defaultUnits } from '../data/defaults';
 
 const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
+const STORAGE_PREFIX = 'inventorry-';
+const DATABASES_KEY = 'inventorry-databases';
+const LAST_USED_KEY = 'inventorry-lastUsed';
+
+export const getDatabaseList = (): string[] => {
+  const data = localStorage.getItem(DATABASES_KEY);
+  if (!data) return ['default'];
+  try {
+    const list = JSON.parse(data);
+    return Array.isArray(list) && list.length > 0 ? list : ['default'];
+  } catch {
+    return ['default'];
+  }
+};
+
+export const setDatabaseList = (databases: string[]): void => {
+  localStorage.setItem(DATABASES_KEY, JSON.stringify(databases));
+};
+
+export const getLastUsedDatabase = (): string => {
+  return localStorage.getItem(LAST_USED_KEY) || 'default';
+};
+
+export const setLastUsedDatabase = (name: string): void => {
+  localStorage.setItem(LAST_USED_KEY, name);
+};
+
+export const initializeDatabases = (): string => {
+  const existingList = localStorage.getItem(DATABASES_KEY);
+  const lastUsed = getLastUsedDatabase();
+  
+  if (!existingList) {
+    setDatabaseList(['default']);
+    setLastUsedDatabase('default');
+    return 'default';
+  }
+  
+  return lastUsed;
+};
+
 export const useStore = create<StoreState>()(
   persist(
     (set, get) => ({
@@ -17,6 +57,7 @@ export const useStore = create<StoreState>()(
       logLimit: 100,
       storedVersion: '',
       collapsedSections: [],
+      activeDatabase: initializeDatabases(),
 
       addProduct: (product) => {
         const now = Date.now();
@@ -303,9 +344,49 @@ export const useStore = create<StoreState>()(
           storedVersion: '',
         });
       },
+
+      setActiveDatabase: (name: string) => {
+        setLastUsedDatabase(name);
+        set({ activeDatabase: name });
+        window.location.reload();
+      },
+
+      createDatabase: (name: string) => {
+        const normalizedName = name.trim();
+        const pattern = /^[a-zA-Z0-9_ ]{1,16}$/;
+        if (!pattern.test(normalizedName)) return false;
+        if (normalizedName !== name) return false;
+
+        const databases = getDatabaseList();
+        if (databases.includes(normalizedName)) return false;
+
+        databases.push(normalizedName);
+        setDatabaseList(databases);
+        return true;
+      },
+
+      getDatabaseList: () => getDatabaseList(),
     }),
     {
-      name: 'inventorry-storage',
+      name: `${STORAGE_PREFIX}runtime`,
+      storage: {
+        getItem: (name: string) => {
+          const dbName = getLastUsedDatabase();
+          const fullKey = `${STORAGE_PREFIX}${dbName}`;
+          const data = localStorage.getItem(fullKey);
+          return data ? JSON.parse(data) : null;
+        },
+        setItem: (name: string, value: unknown) => {
+          const dbName = getLastUsedDatabase();
+          const fullKey = `${STORAGE_PREFIX}${dbName}`;
+          localStorage.setItem(fullKey, JSON.stringify(value));
+        },
+        removeItem: (name: string) => {
+          const dbName = getLastUsedDatabase();
+          const fullKey = `${STORAGE_PREFIX}${dbName}`;
+          localStorage.removeItem(fullKey);
+        },
+      },
       partialize: (state) => ({
         products: state.products,
         categories: state.categories,
