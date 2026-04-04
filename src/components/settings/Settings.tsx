@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Download, Upload, Trash2, Globe, Palette, Check, Folder, Scale, Info, History, Database, Settings as SettingsIcon } from 'lucide-react';
+import { Download, Upload, Trash2, Globe, Palette, Check, Folder, Scale, Info, History, Database, Settings as SettingsIcon, Plus } from 'lucide-react';
 import { useI18n } from '@/hooks/useI18n';
 import { useStore } from '@/store/useStore';
 import { ConfirmDialog } from '@/components/layout/ConfirmDialog';
@@ -21,9 +21,13 @@ const tabs = [
 
 export function Settings() {
   const { t, language, setLanguage } = useI18n();
-  const { theme, setTheme, exportData, importData, clearAllData, setLanguage: setStoreLanguage, logLimit, setLogLimit, categories, units } = useStore();
+  const { theme, setTheme, exportData, importData, clearAllData, setLanguage: setStoreLanguage, logLimit, setLogLimit, categories, units, activeDatabase, setActiveDatabase, createDatabase, getDatabaseList } = useStore();
   const [activeTab, setActiveTab] = useState<SettingsTab>('settings');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [showAddDatabaseModal, setShowAddDatabaseModal] = useState(false);
+  const [newDbName, setNewDbName] = useState('');
+  const [dbNameError, setDbNameError] = useState('');
+  const databases = getDatabaseList();
   const [importMessage, setImportMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
@@ -180,6 +184,26 @@ export function Settings() {
           <Database className="w-5 h-5" />
           {t('settings.dataManagement')}
         </h2>
+        
+        <div className="flex items-center gap-2">
+          <select
+            value={activeDatabase}
+            onChange={(e) => setActiveDatabase(e.target.value)}
+            className="flex-1 py-2 px-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]"
+          >
+            {databases.map((db) => (
+              <option key={db} value={db}>{db}</option>
+            ))}
+          </select>
+          <button
+            onClick={() => setShowAddDatabaseModal(true)}
+            className="p-2 rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-border)] transition-colors"
+            title={t('settings.addDatabase')}
+          >
+            <Plus className="w-5 h-5" />
+          </button>
+        </div>
+
         <div className="space-y-2">
           <button
             onClick={handleExport}
@@ -298,6 +322,73 @@ export function Settings() {
           unit={editingUnit ? units.find(u => u.id === editingUnit) : undefined}
           onClose={() => { setShowUnitModal(false); setEditingUnit(null); }}
         />
+      </Modal>
+
+      <Modal
+        isOpen={showAddDatabaseModal}
+        onClose={() => { setShowAddDatabaseModal(false); setNewDbName(''); setDbNameError(''); }}
+        title={t('settings.addDatabase')}
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              {t('settings.databaseName')}
+            </label>
+            <input
+              type="text"
+              value={newDbName}
+              onChange={(e) => {
+                setNewDbName(e.target.value);
+                setDbNameError('');
+              }}
+              placeholder={t('settings.databaseNamePlaceholder')}
+              maxLength={16}
+              className="w-full py-2 px-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]"
+            />
+            <div className="flex justify-between mt-1">
+              <span className="text-xs text-[var(--color-text-secondary)]">
+                {newDbName.length}/16
+              </span>
+              {dbNameError && (
+                <span className="text-xs text-red-500">{dbNameError}</span>
+              )}
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => { setShowAddDatabaseModal(false); setNewDbName(''); setDbNameError(''); }}
+              className="flex-1 py-2 px-4 rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-border)] transition-colors"
+            >
+              {t('settings.cancel')}
+            </button>
+            <button
+              onClick={() => {
+                const trimmed = newDbName.trim();
+                const pattern = /^[a-zA-Z0-9_ ]{1,16}$/;
+                
+                if (!pattern.test(trimmed)) {
+                  setDbNameError(t('settings.databaseNameInvalid'));
+                  return;
+                }
+                if (trimmed !== newDbName) {
+                  setDbNameError(t('settings.databaseNameInvalid'));
+                  return;
+                }
+                if (databases.includes(trimmed)) {
+                  setDbNameError(t('settings.databaseNameExists'));
+                  return;
+                }
+                
+                if (createDatabase(trimmed)) {
+                  setActiveDatabase(trimmed);
+                }
+              }}
+              className="flex-1 py-2 px-4 rounded-lg bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] transition-colors"
+            >
+              {t('settings.createDatabase')}
+            </button>
+          </div>
+        </div>
       </Modal>
 
       <ConfirmDialog

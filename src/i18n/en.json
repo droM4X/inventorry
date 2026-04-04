@@ -96,7 +96,15 @@
     "importError": "Failed to import data. Invalid format.",
     "clearSuccess": "All data cleared",
     "search": "Search...",
-    "dataManagement": "Data Management"
+    "dataManagement": "Data Management",
+    "database": "Database",
+    "addDatabase": "Add Database",
+    "databaseName": "Database name",
+    "databaseNamePlaceholder": "Enter database name",
+    "databaseNameInvalid": "Invalid name: 1-16 characters (letters, numbers, underscore, space). Cannot start or end with space.",
+    "databaseNameExists": "Database already exists",
+    "createDatabase": "Create",
+    "cancel": "Cancel"
   },
   "actions": {
     "save": "Save",

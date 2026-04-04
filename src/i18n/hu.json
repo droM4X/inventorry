@@ -96,7 +96,15 @@
     "importError": "Sikertelen importálás. Érvénytelen formátum.",
     "clearSuccess": "Összes adat törölve",
     "search": "Keresés...",
-    "dataManagement": "Adatkezelés"
+    "dataManagement": "Adatkezelés",
+    "database": "Adatbázis",
+    "addDatabase": "Adatbázis hozzáadása",
+    "databaseName": "Adatbázis neve",
+    "databaseNamePlaceholder": "Adatbázis név megadása",
+    "databaseNameInvalid": "Érvénytelen név: 1-16 karakter (betű, szám, aláhúzás, szóköz). Nem kezdődhet vagy végződhet szóközzel.",
+    "databaseNameExists": "Az adatbázis már létezik",
+    "createDatabase": "Létrehozás",
+    "cancel": "Mégse"
   },
   "actions": {
     "save": "Mentés",
