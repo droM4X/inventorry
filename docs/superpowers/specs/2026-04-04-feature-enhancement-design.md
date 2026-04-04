@@ -15,11 +15,14 @@ Enable users to maintain multiple independent databases, each with the same data
 
 ### App Initialization
 1. On app load, read `inventorry-lastUsed`
-2. If no value exists:
-   - Check if `inventorry-default` exists (existing data from single-db version)
-   - If yes: migrate by writing to `inventorry-databases` as `["default"]`, keep data
-   - If no: create fresh default database with `inventorry-databases = ["default"]`
-3. Load the persisted state from `inventorry-{lastUsed}` into Zustand store
+2. If no value exists (first run):
+   - Create database `default`: set `inventorry-databases = ["default"]`
+   - Set `inventorry-lastUsed = "default"`
+   - Initialize with fresh default data (no products, default categories/units)
+3. If `inventorry-default` exists but `inventorry-lastUsed` doesn't (upgrading from single-db):
+   - Migrate: write `inventorry-databases = ["default"]`
+   - Set `inventorry-lastUsed = "default"`
+4. Load the persisted state from `inventorry-{lastUsed}` into Zustand store
 
 ### Store Changes
 - Zustand store remains single-instance (in-memory)

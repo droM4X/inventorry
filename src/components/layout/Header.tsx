@@ -3,10 +3,11 @@ import { useState, useRef, useEffect } from 'react';
 
 interface HeaderProps {
   title: string;
+  dbName?: string;
   onSearchChange?: (query: string) => void;
 }
 
-export function Header({ title, onSearchChange }: HeaderProps) {
+export function Header({ title, dbName, onSearchChange }: HeaderProps) {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -61,7 +62,10 @@ export function Header({ title, onSearchChange }: HeaderProps) {
     <header className="sticky top-0 z-40 bg-[var(--color-surface)] border-b border-[var(--color-border)]">
       <div className="flex h-14 items-center justify-between px-4">
         <div className="flex items-center gap-2">
-          <h1 className="text-lg font-semibold">{title}</h1>
+          <h1 className="text-lg font-semibold">
+          {title}
+          {dbName && <sup className="text-xs font-normal text-[var(--color-text-secondary)]">{dbName}</sup>}
+        </h1>
         </div>
 
         {isSearchExpanded ? (

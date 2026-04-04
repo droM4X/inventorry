@@ -76,9 +76,9 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
     const currentY = e.touches[0].clientY;
     const diffX = currentX - swipeRef.current.startX;
     const diffY = Math.abs(currentY - swipeRef.current.startY);
-    
+
     if (diffY > 20) return;
-    
+
     if (diffX > 0) {
       setOffsetX(Math.min(diffX, SWIPE_THRESHOLD + 20));
     } else {
@@ -89,7 +89,7 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
   const handleTouchEnd = () => {
     setIsDragging(false);
     const absOffset = Math.abs(offsetX);
-    
+
     if (absOffset > SWIPE_THRESHOLD) {
       if (offsetX > 0) {
         onDelete();
@@ -250,11 +250,11 @@ export function ProductList({ searchQuery = '' }: ProductListProps) {
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
-    
+
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      result = result.filter((p) => 
-        p.name.toLowerCase().includes(query) || 
+      result = result.filter((p) =>
+        p.name.toLowerCase().includes(query) ||
         (p.subname && p.subname.toLowerCase().includes(query))
       );
     }
@@ -273,7 +273,7 @@ export function ProductList({ searchQuery = '' }: ProductListProps) {
 
   const groupedProducts = useMemo(() => {
     const groups: Record<string, Product[]> = {};
-    
+
     filteredProducts.forEach((product) => {
       if (product.important) return;
       const categoryId = product.categoryId || 'uncategorized';
@@ -366,9 +366,9 @@ export function ProductList({ searchQuery = '' }: ProductListProps) {
       {(() => {
         const importantProducts = filteredProducts.filter((p) => p.important);
         if (importantProducts.length === 0) return null;
-        
+
         const isCollapsed = isSectionCollapsed('important');
-        
+
         return (
           <div className="mb-4 px-4">
             <button
@@ -429,7 +429,7 @@ export function ProductList({ searchQuery = '' }: ProductListProps) {
             const isCollapsed = isSectionCollapsed(categoryId);
             const categoryColor = getCategoryColor(categoryId);
             const categoryIcon = getCategoryIcon(categoryId);
-            
+
             return (
               <div key={categoryId}>
                 <button
@@ -479,7 +479,7 @@ export function ProductList({ searchQuery = '' }: ProductListProps) {
 
       <button
         onClick={handleAdd}
-        className="fixed bottom-16 right-6 w-14 h-14 rounded-full bg-[var(--color-primary)] text-white shadow-lg flex items-center justify-center hover:bg-[var(--color-primary-hover)] transition-colors z-40"
+        className="fixed bottom-20 right-6 w-14 h-14 rounded-full bg-[var(--color-primary)] text-white shadow-lg flex items-center justify-center hover:bg-[var(--color-primary-hover)] transition-colors z-40"
       >
         <Plus className="w-6 h-6" />
       </button>

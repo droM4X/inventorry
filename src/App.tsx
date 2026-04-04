@@ -11,7 +11,7 @@ function App() {
   const [currentView, setCurrentView] = useState<View>('products');
   const [searchQuery, setSearchQuery] = useState('');
   const { t, setLanguage } = useI18n();
-  const { language, theme, storedVersion, setStoredVersion } = useStore();
+  const { language, theme, storedVersion, setStoredVersion, activeDatabase } = useStore();
   const { showNotification, dismissNotification } = useVersionCheck(storedVersion, setStoredVersion);
 
   const handleSearchChange = (query: string) => {
@@ -56,6 +56,7 @@ function App() {
       {showNotification && <VersionNotification onDismiss={dismissNotification} />}
       <Header
         title={getTitle()}
+        dbName={activeDatabase}
         onSearchChange={handleSearchChange}
       />
       <main className="flex-1">
