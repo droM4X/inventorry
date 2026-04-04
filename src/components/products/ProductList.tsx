@@ -250,29 +250,6 @@ export function ProductList({ searchQuery = '' }: ProductListProps) {
 
   const lastSearchRef = useRef('');
 
-  useEffect(() => {
-    if (searchQuery === lastSearchRef.current) return;
-    lastSearchRef.current = searchQuery;
-    
-    if (searchQuery.trim()) {
-      const matchedCategoryIds = new Set<string>();
-      filteredProducts.forEach((product) => {
-        const catId = product.categoryId || 'uncategorized';
-        matchedCategoryIds.add(catId);
-        if (product.important) {
-          matchedCategoryIds.add('important');
-        }
-      });
-      
-      matchedCategoryIds.forEach((catId) => {
-        const sectionId = `${filter}-${catId}`;
-        if (collapsedSections.includes(sectionId)) {
-          toggleCollapsedSection(sectionId);
-        }
-      });
-    }
-  }, [searchQuery]);
-
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
@@ -295,6 +272,29 @@ export function ProductList({ searchQuery = '' }: ProductListProps) {
 
     return result;
   }, [products, searchQuery, filter]);
+
+  useEffect(() => {
+    if (searchQuery === lastSearchRef.current) return;
+    lastSearchRef.current = searchQuery;
+    
+    if (searchQuery.trim()) {
+      const matchedCategoryIds = new Set<string>();
+      filteredProducts.forEach((product) => {
+        const catId = product.categoryId || 'uncategorized';
+        matchedCategoryIds.add(catId);
+        if (product.important) {
+          matchedCategoryIds.add('important');
+        }
+      });
+      
+      matchedCategoryIds.forEach((catId) => {
+        const sectionId = `${filter}-${catId}`;
+        if (collapsedSections.includes(sectionId)) {
+          toggleCollapsedSection(sectionId);
+        }
+      });
+    }
+  }, [searchQuery, filteredProducts, filter, collapsedSections, toggleCollapsedSection]);
 
   const groupedProducts = useMemo(() => {
     const groups: Record<string, Product[]> = {};

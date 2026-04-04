@@ -370,17 +370,20 @@ export const useStore = create<StoreState>()(
     {
       name: `${STORAGE_PREFIX}runtime`,
       storage: {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         getItem: (_name: string) => {
           const dbName = getLastUsedDatabase();
           const fullKey = `${STORAGE_PREFIX}${dbName}`;
           const data = localStorage.getItem(fullKey);
           return data ? JSON.parse(data) : null;
         },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         setItem: (_name: string, value: unknown) => {
           const dbName = getLastUsedDatabase();
           const fullKey = `${STORAGE_PREFIX}${dbName}`;
           localStorage.setItem(fullKey, JSON.stringify(value));
         },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         removeItem: (_name: string) => {
           const dbName = getLastUsedDatabase();
           const fullKey = `${STORAGE_PREFIX}${dbName}`;
