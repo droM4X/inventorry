@@ -5,7 +5,7 @@
 - Fixed search to automatically expand collapsed sections with matching products
 - Removed 500 log limit option
 
-## v1.2.0 - 2026-02-15
+## v1.2.0 - 2026-04-02
 - Initial feature release with products, categories, units management
 - Import/export data functionality
 - Activity logging

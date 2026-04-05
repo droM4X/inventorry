@@ -63,8 +63,8 @@ export function Header({ title, dbName, onSearchChange }: HeaderProps) {
       <div className="flex h-14 items-center justify-between px-4">
         <div className="flex items-center gap-2">
           <h1 className="text-lg font-semibold">
-          {title}
-          {dbName && <sup className="text-xs font-normal text-[var(--color-text-secondary)]"> {dbName}</sup>}
+            {title}&nbsp;
+            {dbName && <sup className="text-xs font-normal text-[var(--color-text-secondary)]"> {dbName}</sup>}
         </h1>
         </div>
 

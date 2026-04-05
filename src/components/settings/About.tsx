@@ -6,14 +6,14 @@ import { APP_VERSION } from '@/lib/version';
 export function About() {
   const { t } = useI18n();
   const [releaseLog, setReleaseLog] = useState<string>('');
-  
+
   useEffect(() => {
-    fetch('/release_log.md')
+    fetch('release_log.md')
       .then((res) => res.text())
       .then((text) => setReleaseLog(text))
       .catch(() => setReleaseLog(''));
   }, []);
-  
+
   const renderMarkdown = (text: string) => {
     const lines = text.split('\n');
     return lines.map((line, i) => {
@@ -32,7 +32,7 @@ export function About() {
       return <p key={i}>{line}</p>;
     });
   };
-  
+
   return (
     <div className="p-6 text-center">
       <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[var(--color-primary)] text-white mb-4">
@@ -45,7 +45,7 @@ export function About() {
         <p className="mt-4">{t('about.pwaReady')}</p>
         <p>{t('about.offlineSupport')}</p>
       </div>
-      
+
       {releaseLog && (
         <div className="mt-8 text-left bg-[var(--color-surface)] rounded-xl p-4 border border-[var(--color-border)]">
           <div className="prose prose-sm dark:prose-invert max-w-none">
