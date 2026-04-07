@@ -94,7 +94,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[var(--color-background)] pb-20">
-      {showNotification && <VersionNotification onDismiss={dismissNotification} />}
+      {showNotification && <VersionNotification onDismiss={dismissNotification} onNavigate={() => navigateTo('settings')} />}
       <Header
         title={getTitle()}
         dbName={activeDatabase}

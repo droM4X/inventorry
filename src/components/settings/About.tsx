@@ -14,6 +14,17 @@ export function About() {
       .catch(() => setReleaseLog(''));
   }, []);
 
+  useEffect(() => {
+    if (window.location.hash === '#settings' || window.location.hash === '') {
+      const scrollTarget = document.getElementById('release-log');
+      if (scrollTarget) {
+        setTimeout(() => {
+          scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  }, [releaseLog]);
+
   const renderMarkdown = (text: string) => {
     const lines = text.split('\n');
     return lines.map((line, i) => {
@@ -47,7 +58,7 @@ export function About() {
       </div>
 
       {releaseLog && (
-        <div className="mt-8 text-left bg-[var(--color-surface)] rounded-xl p-4 border border-[var(--color-border)]">
+        <div id="release-log" className="mt-8 text-left bg-[var(--color-surface)] rounded-xl p-4 border border-[var(--color-border)]">
           <div className="prose prose-sm dark:prose-invert max-w-none">
             {renderMarkdown(releaseLog)}
           </div>
