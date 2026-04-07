@@ -14,17 +14,6 @@ export function About() {
       .catch(() => setReleaseLog(''));
   }, []);
 
-  useEffect(() => {
-    if (window.location.hash === '#settings' || window.location.hash === '') {
-      const scrollTarget = document.getElementById('release-log');
-      if (scrollTarget) {
-        setTimeout(() => {
-          scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-      }
-    }
-  }, [releaseLog]);
-
   const renderMarkdown = (text: string) => {
     const lines = text.split('\n');
     return lines.map((line, i) => {

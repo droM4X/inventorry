@@ -99,11 +99,16 @@
     "dataManagement": "Data Management",
     "database": "Database",
     "addDatabase": "Add Database",
+    "addNewDatabase": "Add new database",
+    "renameDatabase": "Rename database",
+    "deleteDatabase": "Delete database",
+    "confirmDeleteDatabase": "Are you sure you want to delete the database \"{name}\"? This will remove all data in this database and cannot be undone.",
     "databaseName": "Database name",
     "databaseNamePlaceholder": "Enter database name",
     "databaseNameInvalid": "Invalid name: 1-16 characters (letters, numbers, underscore, space). Cannot start or end with space.",
     "databaseNameExists": "Database already exists",
     "createDatabase": "Create",
+    "save": "Save",
     "cancel": "Cancel"
   },
   "actions": {

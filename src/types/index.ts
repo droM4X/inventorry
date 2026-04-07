@@ -79,6 +79,8 @@ export interface StoreState {
   clearAllData: () => void;
   setActiveDatabase: (name: string) => void;
   createDatabase: (name: string) => boolean;
+  renameDatabase: (oldName: string, newName: string) => boolean;
+  deleteDatabase: (name: string) => void;
   getDatabaseList: () => string[];
 }
 

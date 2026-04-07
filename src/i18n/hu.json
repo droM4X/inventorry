@@ -99,11 +99,16 @@
     "dataManagement": "Adatkezelés",
     "database": "Adatbázis",
     "addDatabase": "Adatbázis hozzáadása",
+    "addNewDatabase": "Új adatbázis hozzáadása",
+    "renameDatabase": "Adatbázis átnevezése",
+    "deleteDatabase": "Adatbázis törlése",
+    "confirmDeleteDatabase": "Biztosan törölni szeretnéd a \"{name}\" adatbázist? Az összes adat véglegesen törlődik és nem állítható vissza.",
     "databaseName": "Adatbázis neve",
     "databaseNamePlaceholder": "Adatbázis név megadása",
     "databaseNameInvalid": "Érvénytelen név: 1-16 karakter (betű, szám, aláhúzás, szóköz). Nem kezdődhet vagy végződhet szóközzel.",
     "databaseNameExists": "Az adatbázis már létezik",
     "createDatabase": "Létrehozás",
+    "save": "Mentés",
     "cancel": "Mégse"
   },
   "actions": {

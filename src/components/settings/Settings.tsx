@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Download, Upload, Trash2, Globe, Palette, Check, Folder, Scale, Info, History, Database, Settings as SettingsIcon, Plus } from 'lucide-react';
+import { Download, Upload, Trash2, Globe, Palette, Check, Folder, Scale, Info, History, Database, Settings as SettingsIcon, Plus, Cog } from 'lucide-react';
 import { useI18n } from '@/hooks/useI18n';
 import { useStore } from '@/store/useStore';
 import { ConfirmDialog } from '@/components/layout/ConfirmDialog';
@@ -25,12 +25,14 @@ interface SettingsProps {
 
 export function Settings({ initialTab = 'settings' }: SettingsProps) {
   const { t, language, setLanguage } = useI18n();
-  const { theme, setTheme, exportData, importData, clearAllData, setLanguage: setStoreLanguage, logLimit, setLogLimit, categories, units, activeDatabase, setActiveDatabase, createDatabase, getDatabaseList } = useStore();
+  const { theme, setTheme, exportData, importData, setLanguage: setStoreLanguage, logLimit, setLogLimit, categories, units, activeDatabase, setActiveDatabase, createDatabase, renameDatabase, deleteDatabase, getDatabaseList } = useStore();
   const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab);
-  const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [showAddDatabaseModal, setShowAddDatabaseModal] = useState(false);
+  const [showRenameDatabaseModal, setShowRenameDatabaseModal] = useState(false);
+  const [showDeleteDatabaseConfirm, setShowDeleteDatabaseConfirm] = useState(false);
   const [newDbName, setNewDbName] = useState('');
   const [dbNameError, setDbNameError] = useState('');
+  const [isDbActionsOpen, setIsDbActionsOpen] = useState(false);
   const databases = getDatabaseList();
   const [importMessage, setImportMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -75,9 +77,9 @@ export function Settings({ initialTab = 'settings' }: SettingsProps) {
     e.target.value = '';
   };
 
-  const handleClearAll = () => {
-    clearAllData();
-    setShowClearConfirm(false);
+  const handleDeleteDatabase = () => {
+    deleteDatabase(activeDatabase);
+    setShowDeleteDatabaseConfirm(false);
   };
 
   const handleLanguageChange = (lang: 'en' | 'hu') => {
@@ -199,44 +201,79 @@ export function Settings({ initialTab = 'settings' }: SettingsProps) {
             ))}
           </select>
           <button
-            onClick={() => setShowAddDatabaseModal(true)}
-            className="p-2 rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-border)] transition-colors"
-            title={t('settings.addDatabase')}
+            onClick={() => setIsDbActionsOpen(!isDbActionsOpen)}
+            className={`p-2 rounded-lg border transition-colors ${
+              isDbActionsOpen
+                ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)]'
+                : 'border-[var(--color-border)] hover:bg-[var(--color-border)]'
+            }`}
+            title={t('settings.dataManagement')}
           >
-            <Plus className="w-5 h-5" />
+            <Cog className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="space-y-2">
-          <button
-            onClick={handleExport}
-            className="w-full flex items-center gap-3 p-4 rounded-xl border border-[var(--color-border)] hover:bg-[var(--color-border)] transition-colors"
-          >
-            <Download className="w-5 h-5" />
-            {t('settings.export')}
-          </button>
-          <button
-            onClick={handleImportClick}
-            className="w-full flex items-center gap-3 p-4 rounded-xl border border-[var(--color-border)] hover:bg-[var(--color-border)] transition-colors"
-          >
-            <Upload className="w-5 h-5" />
-            {t('settings.import')}
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".json"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-          <button
-            onClick={() => setShowClearConfirm(true)}
-            className="w-full flex items-center gap-3 p-4 rounded-xl border border-red-300 dark:border-red-800 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-          >
-            <Trash2 className="w-5 h-5" />
-            {t('settings.clearAll')}
-          </button>
-        </div>
+        {isDbActionsOpen && (
+          <div className="space-y-2">
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  setNewDbName('');
+                  setDbNameError('');
+                  setShowAddDatabaseModal(true);
+                }}
+                className="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-border)] transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                {t('settings.addNewDatabase')}
+              </button>
+              <button
+                onClick={() => {
+                  setNewDbName(activeDatabase);
+                  setDbNameError('');
+                  setShowRenameDatabaseModal(true);
+                }}
+                className="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-border)] transition-colors"
+              >
+                <Cog className="w-4 h-4" />
+                {t('settings.renameDatabase')}
+              </button>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                onClick={handleImportClick}
+                className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-border)] transition-colors"
+              >
+                <Upload className="w-5 h-5" />
+                {t('settings.import')}
+              </button>
+              <button
+                onClick={handleExport}
+                className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-border)] transition-colors"
+              >
+                <Download className="w-5 h-5" />
+                {t('settings.export')}
+              </button>
+            </div>
+
+            <button
+              onClick={() => setShowDeleteDatabaseConfirm(true)}
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg border border-red-300 dark:border-red-800 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            >
+              <Trash2 className="w-5 h-5" />
+              {t('settings.deleteDatabase')}
+            </button>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          </div>
+        )}
         {importMessage && (
           <div
             className={`p-3 rounded-xl text-sm ${
@@ -251,11 +288,11 @@ export function Settings({ initialTab = 'settings' }: SettingsProps) {
       </section>
 
       <ConfirmDialog
-        isOpen={showClearConfirm}
-        onClose={() => setShowClearConfirm(false)}
-        onConfirm={handleClearAll}
-        title={t('settings.clearAll')}
-        message={t('settings.confirmClear')}
+        isOpen={showDeleteDatabaseConfirm}
+        onClose={() => setShowDeleteDatabaseConfirm(false)}
+        onConfirm={handleDeleteDatabase}
+        title={t('settings.deleteDatabase')}
+        message={t('settings.confirmDeleteDatabase', { name: activeDatabase })}
       />
     </div>
   );
@@ -330,7 +367,7 @@ export function Settings({ initialTab = 'settings' }: SettingsProps) {
       <Modal
         isOpen={showAddDatabaseModal}
         onClose={() => { setShowAddDatabaseModal(false); setNewDbName(''); setDbNameError(''); }}
-        title={t('settings.addDatabase')}
+        title={t('settings.addNewDatabase')}
       >
         <div className="space-y-4">
           <div>
@@ -394,13 +431,73 @@ export function Settings({ initialTab = 'settings' }: SettingsProps) {
         </div>
       </Modal>
 
-      <ConfirmDialog
-        isOpen={showClearConfirm}
-        onClose={() => setShowClearConfirm(false)}
-        onConfirm={handleClearAll}
-        title={t('settings.clearAll')}
-        message={t('settings.confirmClear')}
-      />
+      <Modal
+        isOpen={showRenameDatabaseModal}
+        onClose={() => { setShowRenameDatabaseModal(false); setNewDbName(''); setDbNameError(''); }}
+        title={t('settings.renameDatabase')}
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              {t('settings.databaseName')}
+            </label>
+            <input
+              type="text"
+              value={newDbName}
+              onChange={(e) => {
+                setNewDbName(e.target.value);
+                setDbNameError('');
+              }}
+              placeholder={t('settings.databaseNamePlaceholder')}
+              maxLength={16}
+              className="w-full py-2 px-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]"
+            />
+            <div className="flex justify-between mt-1">
+              <span className="text-xs text-[var(--color-text-secondary)]">
+                {newDbName.length}/16
+              </span>
+              {dbNameError && (
+                <span className="text-xs text-red-500">{dbNameError}</span>
+              )}
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => { setShowRenameDatabaseModal(false); setNewDbName(''); setDbNameError(''); }}
+              className="flex-1 py-2 px-4 rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-border)] transition-colors"
+            >
+              {t('settings.cancel')}
+            </button>
+            <button
+              onClick={() => {
+                const trimmed = newDbName.trim();
+                const pattern = /^[a-zA-Z0-9_ ]{1,16}$/;
+                
+                if (!pattern.test(trimmed)) {
+                  setDbNameError(t('settings.databaseNameInvalid'));
+                  return;
+                }
+                if (trimmed !== newDbName) {
+                  setDbNameError(t('settings.databaseNameInvalid'));
+                  return;
+                }
+                if (databases.includes(trimmed)) {
+                  setDbNameError(t('settings.databaseNameExists'));
+                  return;
+                }
+                
+                if (renameDatabase(activeDatabase, trimmed)) {
+                  setActiveDatabase(trimmed);
+                  setShowRenameDatabaseModal(false);
+                }
+              }}
+              className="flex-1 py-2 px-4 rounded-lg bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] transition-colors"
+            >
+              {t('settings.save')}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -365,6 +365,52 @@ export const useStore = create<StoreState>()(
         return true;
       },
 
+      renameDatabase: (oldName: string, newName: string) => {
+        const normalizedName = newName.trim();
+        const pattern = /^[a-zA-Z0-9_ ]{1,16}$/;
+        if (!pattern.test(normalizedName)) return false;
+        if (normalizedName !== newName) return false;
+
+        const databases = getDatabaseList();
+        if (databases.includes(normalizedName)) return false;
+
+        const index = databases.indexOf(oldName);
+        if (index === -1) return false;
+
+        databases[index] = normalizedName;
+        setDatabaseList(databases);
+
+        if (get().activeDatabase === oldName) {
+          setLastUsedDatabase(normalizedName);
+        }
+
+        localStorage.removeItem(`${STORAGE_PREFIX}${oldName}`);
+
+        return true;
+      },
+
+      deleteDatabase: (name: string) => {
+        const databases = getDatabaseList();
+        const index = databases.indexOf(name);
+        if (index === -1) return;
+
+        databases.splice(index, 1);
+        setDatabaseList(databases);
+
+        localStorage.removeItem(`${STORAGE_PREFIX}${name}`);
+
+        if (get().activeDatabase === name) {
+          const newActive = databases.length > 0 ? databases[0] : 'default';
+          if (!databases.includes(newActive)) {
+            setDatabaseList(['default']);
+            setLastUsedDatabase('default');
+          } else {
+            setLastUsedDatabase(newActive);
+          }
+          window.location.reload();
+        }
+      },
+
       getDatabaseList: () => getDatabaseList(),
     }),
     {
