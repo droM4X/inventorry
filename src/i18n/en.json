@@ -6,7 +6,7 @@
   "about": {
     "version": "Version {version}",
     "versionUpdated": "App updated to version {version}!",
-    "versionMessage": "New features and improvements are now available.",
+    "more": "More",
     "pwaReady": "PWA Ready",
     "offlineSupport": "Offline Support"
   },

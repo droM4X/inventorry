@@ -6,7 +6,7 @@
   "about": {
     "version": "Verzió {version}",
     "versionUpdated": "Alkalmazás frissítve {version} verzióra!",
-    "versionMessage": "Új funkciók és fejlesztések érhetők el.",
+    "more": "Bővebben",
     "pwaReady": "PWA app",
     "offlineSupport": "Offline támogatás"
   },

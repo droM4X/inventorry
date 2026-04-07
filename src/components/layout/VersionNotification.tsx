@@ -25,6 +25,7 @@ export function VersionNotification({ onDismiss, onNavigate }: VersionNotificati
         <Sparkles className="w-6 h-6 flex-shrink-0 mt-0.5" />
         <div className="flex-1">
           <p className="font-medium">{t('about.versionUpdated', { version: APP_VERSION })}</p>
+          <p className="text-sm text-blue-100">{t('about.more')}...</p>
         </div>
         <button
           onClick={(e) => {
