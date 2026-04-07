@@ -10,12 +10,6 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    copy({
-      targets: [
-        { src: 'docs/RELEASE_LOG.md', dest: 'public/', rename: 'release_log.md' },
-      ],
-      hook: 'writeBundle',
-    }),
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["favicon.svg", "robots.txt"],
@@ -88,5 +82,5 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  base: "./",
+  base: "/inventorry/",
 })

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
+    "prebuild": "cp docs/RELEASE_LOG.md public/release_log.md",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
