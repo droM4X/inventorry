@@ -11,6 +11,7 @@ const VIEW_TITLES: Record<View, string> = {
   products: 'products',
   logs: 'logs',
   settings: 'settings',
+  about: 'settings',
 };
 
 function App() {
@@ -87,6 +88,8 @@ function App() {
         return <Logs />;
       case 'settings':
         return <Settings />;
+      case 'about':
+        return <Settings initialTab="about" />;
       default:
         return <ProductList searchQuery={searchQuery} />;
     }
@@ -94,7 +97,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[var(--color-background)] pb-20">
-      {showNotification && <VersionNotification onDismiss={dismissNotification} onNavigate={() => navigateTo('settings')} />}
+      {showNotification && <VersionNotification onDismiss={dismissNotification} onNavigate={() => navigateTo('about')} />}
       <Header
         title={getTitle()}
         dbName={activeDatabase}

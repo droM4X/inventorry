@@ -19,10 +19,14 @@ const tabs = [
   { id: 'about', label: 'nav.about', icon: Info },
 ];
 
-export function Settings() {
+interface SettingsProps {
+  initialTab?: SettingsTab;
+}
+
+export function Settings({ initialTab = 'settings' }: SettingsProps) {
   const { t, language, setLanguage } = useI18n();
   const { theme, setTheme, exportData, importData, clearAllData, setLanguage: setStoreLanguage, logLimit, setLogLimit, categories, units, activeDatabase, setActiveDatabase, createDatabase, getDatabaseList } = useStore();
-  const [activeTab, setActiveTab] = useState<SettingsTab>('settings');
+  const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [showAddDatabaseModal, setShowAddDatabaseModal] = useState(false);
   const [newDbName, setNewDbName] = useState('');

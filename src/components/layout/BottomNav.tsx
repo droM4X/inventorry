@@ -1,7 +1,7 @@
 import { Package, History, Settings } from 'lucide-react';
 import { useI18n } from '@/hooks/useI18n';
 
-type View = 'products' | 'settings' | 'logs';
+type View = 'products' | 'settings' | 'logs' | 'about';
 
 interface BottomNavProps {
   currentView: View;
