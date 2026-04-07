@@ -41,5 +41,8 @@
     "vite": "^8.0.1",
     "vite-plugin-copy": "^0.1.6",
     "vite-plugin-pwa": "^1.2.0"
+  },
+  "overrides": {
+    "serialize-javascript": "7.0.5"
   }
 }
