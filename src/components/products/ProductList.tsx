@@ -8,6 +8,7 @@ import { useStore } from '@/store/useStore';
 import { Modal } from '@/components/layout/Modal';
 import { ConfirmDialog } from '@/components/layout/ConfirmDialog';
 import { ProductModal } from './ProductModal';
+import { ErrorBoundary } from '@/components/layout/ErrorBoundary';
 import type { FilterType, Product } from '@/types';
 
 const iconMap: Record<string, typeof faCartShopping> = {
@@ -159,13 +160,19 @@ function SwipeableRow({ product, categoryColor, categoryIcon, status, onEdit, on
             </div>
             <div className="flex items-center gap-1">
               <button
-                onClick={() => onQuantityChange(Math.max(0, product.quantity - 1))}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onQuantityChange(Math.max(0, product.quantity - 1));
+                }}
                 className="w-10 h-10 rounded-lg bg-[var(--color-background)] border border-[var(--color-border)] flex items-center justify-center hover:bg-[var(--color-border)] transition-colors"
               >
                 <Minus className="w-4 h-4" />
               </button>
               <button
-                onClick={() => onQuantityChange(product.quantity + 1)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onQuantityChange(product.quantity + 1);
+                }}
                 className="w-10 h-10 rounded-lg bg-[var(--color-background)] border border-[var(--color-border)] flex items-center justify-center hover:bg-[var(--color-border)] transition-colors"
               >
                 <Plus className="w-4 h-4" />
@@ -254,10 +261,12 @@ export function ProductList({ searchQuery = '' }: ProductListProps) {
     let result = [...products];
 
     if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
+      const normalize = (s: string) =>
+        s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      const query = normalize(searchQuery);
       result = result.filter((p) =>
-        p.name.toLowerCase().includes(query) ||
-        (p.subname && p.subname.toLowerCase().includes(query))
+        normalize(p.name).includes(query) ||
+        (p.subname && normalize(p.subname).includes(query))
       );
     }
 
@@ -360,6 +369,7 @@ export function ProductList({ searchQuery = '' }: ProductListProps) {
   };
 
   return (
+    <ErrorBoundary>
     <div className="flex flex-col h-full">
       <div className="p-4 space-y-3">
         <div className="flex gap-2">
@@ -528,5 +538,6 @@ export function ProductList({ searchQuery = '' }: ProductListProps) {
         message={t('product.confirmDelete')}
       />
     </div>
+    </ErrorBoundary>
   );
 }

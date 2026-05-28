@@ -83,24 +83,31 @@ export const useStore = create<StoreState>()(
         const state = get();
         const product = state.products.find((p) => p.id === id);
         const unit = state.units.find((u) => u.id === (updates.unitId || product?.unitId));
-        
+
+        let activityLog: ActivityLog | null = null;
         if (product && updates.quantity !== undefined && updates.quantity !== product.quantity) {
           const diff = updates.quantity - product.quantity;
-          get().addActivityLog({
+          activityLog = {
             productId: id,
             productName: product.name,
             action: diff > 0 ? 'quantity_added' : 'quantity_removed',
             quantityChange: Math.abs(diff),
-            unitName: unit ? get().getUnitName(unit.id, state.language) : '',
+            unitName: unit ? state.getUnitName(unit.id, state.language) : '',
             unitAbbreviation: unit?.abbreviation || '',
-          });
+            id: generateId(),
+            timestamp: Date.now(),
+          };
         }
-        
-        set((state) => ({
-          products: state.products.map((p) =>
+
+        set((state) => {
+          const products = state.products.map((p) =>
             p.id === id ? { ...p, ...updates, updatedAt: Date.now() } : p
-          ),
-        }));
+          );
+          const activityLogs = activityLog
+            ? [activityLog, ...state.activityLogs].slice(0, state.logLimit)
+            : state.activityLogs;
+          return { products, activityLogs };
+        });
       },
 
       toggleProductImportant: (id) => {
