@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { X, Sparkles } from 'lucide-react';
-import { APP_VERSION } from '@/lib/version';
 import { useI18n } from '@/hooks/useI18n';
 
 interface VersionNotificationProps {
@@ -24,7 +23,7 @@ export function VersionNotification({ onDismiss, onNavigate }: VersionNotificati
       >
         <Sparkles className="w-6 h-6 flex-shrink-0 mt-0.5" />
         <div className="flex-1">
-          <p className="font-medium">{t('about.versionUpdated', { version: APP_VERSION })}</p>
+          <p className="font-medium">{t('about.versionUpdated', { version: __APP_VERSION__ })}</p>
           <p className="text-sm text-blue-100">{t('about.more')}...</p>
         </div>
         <button
@@ -45,11 +44,11 @@ export function useVersionCheck(storedVersion: string, setStoredVersion: (v: str
   const [showNotification, setShowNotification] = useState(false);
 
   useEffect(() => {
-    if (storedVersion && storedVersion !== APP_VERSION) {
+    if (storedVersion && storedVersion !== __APP_VERSION__) {
       setShowNotification(true);
-      setStoredVersion(APP_VERSION);
+      setStoredVersion(__APP_VERSION__);
     } else if (!storedVersion) {
-      setStoredVersion(APP_VERSION);
+      setStoredVersion(__APP_VERSION__);
     }
   }, [storedVersion, setStoredVersion]);
 

@@ -8,7 +8,14 @@
     "versionUpdated": "Alkalmazás frissítve {version} verzióra!",
     "more": "Bővebben",
     "pwaReady": "PWA app",
-    "offlineSupport": "Offline támogatás"
+    "offlineSupport": "Offline támogatás",
+    "checkForUpdates": "Frissítések keresése",
+    "checking": "Ellenőrzés...",
+    "updateAvailable": "Frissítés elérhető",
+    "updateDescription": "Új verzió elérhető. Töltsd újra a frissítés alkalmazásához.",
+    "updateNow": "Frissítés most",
+    "later": "Később",
+    "upToDate": "Az alkalmazás naprakész"
   },
   "nav": {
     "products": "Készletek",

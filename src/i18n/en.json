@@ -8,7 +8,14 @@
     "versionUpdated": "App updated to version {version}!",
     "more": "More",
     "pwaReady": "PWA Ready",
-    "offlineSupport": "Offline Support"
+    "offlineSupport": "Offline Support",
+    "checkForUpdates": "Check for updates",
+    "checking": "Checking...",
+    "updateAvailable": "Update available",
+    "updateDescription": "A new version is ready. Reload to apply the update.",
+    "updateNow": "Update now",
+    "later": "Later",
+    "upToDate": "App is up to date"
   },
   "nav": {
     "products": "Products",

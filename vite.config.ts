@@ -1,4 +1,5 @@
 import path from "path"
+import { readFileSync } from "fs"
 import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import { VitePWA } from "vite-plugin-pwa"
@@ -6,12 +7,17 @@ import { defineConfig } from "vite"
 // @ts-expect-error - no types available for vite-plugin-copy
 import { copy } from "vite-plugin-copy"
 
+const pkg = JSON.parse(readFileSync("./package.json", "utf-8"))
+
 export default defineConfig({
+  define: {
+    __APP_VERSION__: JSON.stringify(pkg.version),
+  },
   plugins: [
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: "autoUpdate",
+      registerType: "prompt",
       includeAssets: ["favicon.svg", "robots.txt"],
       manifest: {
         name: "Inventorry",

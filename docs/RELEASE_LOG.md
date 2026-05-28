@@ -1,10 +1,11 @@
 # Release Log
 
-## v1.4.1 - 2026-05-28
+## v1.5.0 - 2026-05-28
 - Fixed search to be accent-insensitive (e.g. "Su" matches "Súroló")
 - Fixed +/- buttons and other interactions clearing the search state
 - Updated dependencies and applied security fixes
 - Updated vite-plugin-pwa for Vite 8 compatibility
+- Added manual PWA update check with update notification (About page + banner)
 
 ## v1.4.0 - 2026-04-07
 - Enhanced database management UI with collapsible actions panel
