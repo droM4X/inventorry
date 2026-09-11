@@ -1,5 +1,8 @@
 # Release Log
 
+## v1.5.1 - 2026-09-11
+- Updated dependencies (React 19.3, Vite 8.3, Tailwind CSS 4.3.3, etc.)
+
 ## v1.5.0 - 2026-05-28
 - Fixed search to be accent-insensitive (e.g. "Su" matches "Súroló")
 - Fixed +/- buttons and other interactions clearing the search state
